@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<app>
+    <id>pandora</id>
+    <version>1.23</version>
+    <type>qml</type>
+    <!--allowed_countries>us</allowed_countries-->
+    <min_os_version>2.1.0</min_os_version>
+</app>
