@@ -1,4 +1,5 @@
 Qt.include('utility.js');
+Qt.include('padoraAPI.js');
 
 var DataType = {
   JSON: 2,
