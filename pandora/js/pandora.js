@@ -23,11 +23,9 @@ function updateActivityTimestamp() {
   var diff = (Global.lastActivityTimestamp) ? (stamp - Global.lastActivityTimestamp) : 0;
   Global.lastActivityTimestamp = stamp;
 
-  if (debugMode) {
-    printf('called from (%s)', arguments.callee.caller.name);
-    printWindowProperties();
-    printf('Activity timestamp (%s) (diff-%d)', Qt.formatDateTime(Global.lastActivityTimestamp, 'MM.dd.yyyy hh:mm:ss'), diff);
-  }
+  printf('called from (%s)', arguments.callee.caller.name);
+  printWindowProperties();
+  printf('Activity timestamp (%s) (diff-%d)', Qt.formatDateTime(Global.lastActivityTimestamp, 'MM.dd.yyyy hh:mm:ss'), diff);
 }
 
 
@@ -37,9 +35,7 @@ function updateActivityTimestamp() {
  * ask the user if they are still listening.
  */
 function checkActivityTimeout() {
-  if (debugMode) {
-    print('Checking activity timeout!');
-  }
+  print('Checking activity timeout!');
 
   var current = new Date();
   var diff = current - Global.lastActivityTimestamp;
@@ -50,9 +46,7 @@ function checkActivityTimeout() {
     return false;
   }
 
-  if (debugMode) {
-    print('Playback can continue.');
-  }
+  print('Playback can continue.');
 
   // playback can continue
   return true;
@@ -82,7 +76,6 @@ function getDeviceId() {
  * @param    f   object to test for typeof function
  * @returns  True if object is function
  */
-
 function isFunction(f) {
   return (typeof f === 'function');
 }
@@ -112,29 +105,13 @@ function sendWithArgs() {
  * @param    item2   Message. Optional if message specified as item1
  */
 function print(item1, item2) {
-  if (item2 === undefined) {
-    item1 = (typeof item1 !== 'string') ? JSON.stringify(item1) : item1;
-    boxeeAPI.logInfo('[pandora] ' + item1);
-  } else {
-    item2 = (typeof item2 !== 'string') ? JSON.stringify(item2) : item2;
-    boxeeAPI.logInfo('[pandora] (' + item1 + ') ' + item2);
-  }
-}
-
-
-/**
- * Prints anything to the log, only specify a message and the calling functions name will be used
- * @param    item1   Message or function name. See function description
- * @param    item2   Message. Optional if message specified as item1
- */
-function printd(item1, item2) {
   if (debugMode) {
     if (item2 === undefined) {
       item1 = (typeof item1 !== 'string') ? JSON.stringify(item1) : item1;
-      boxeeAPI.logInfo('pandora [' + arguments.callee.caller.name + '] ' + item1);
+      boxeeAPI.logInfo('[pandora] ' + item1);
     } else {
       item2 = (typeof item2 !== 'string') ? JSON.stringify(item2) : item2;
-      boxeeAPI.logInfo('pandora [' + item1 + '] ' + item2);
+      boxeeAPI.logInfo('[pandora] (' + item1 + ') ' + item2);
     }
   }
 }
@@ -145,17 +122,6 @@ function printd(item1, item2) {
  * @param    message Message to print
  */
 function printf(message) {
-  var args = Array.prototype.slice.call(arguments);
-  if (args.length === 1) boxeeAPI.logInfo('[pandora] ' + message);
-  else if (args.length > 1) boxeeAPI.logInfo('[pandora] ' + vsprintf(message, args.slice(1)));
-}
-
-
-/**
- * Same as print(). Prints anything to the log but uses sprintf
- * @param    message Message to print
- */
-function printfd(message) {
   if (debugMode) {
     var args = Array.prototype.slice.call(arguments);
     if (args.length === 1) {
@@ -337,10 +303,7 @@ function uiHideWait() {
  * @param  {Function} callback2
  */
 function uiKeyboardDialog(message, initval, callback, callback2) {
-  if (debugMode) {
-    printf('showing keyboard dialog from (%s)', arguments.callee.caller.name);
-  }
-
+  printf('showing keyboard dialog from (%s)', arguments.callee.caller.name);
   var splash = boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg';
   boxeeAPI.showKeyboardDialog('Pandora', callback, false, initval, message, true, callback2, splash)
 }
@@ -356,11 +319,7 @@ function uiOkDialog(message, callback, callback2) {
   if (!isFunction(callback2)) {
     callback2 = callback;
   }
-
-  if (debugMode) {
-    printf('showing ok dialog from (%s)', arguments.callee.caller.name);
-  }
-
+  printf('showing ok dialog from (%s)', arguments.callee.caller.name);
   boxeeAPI.showOkDialog('Pandora', message, callback, callback2, 'OK', true, boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg');
 }
 
@@ -375,9 +334,7 @@ function uiOkDialog(message, callback, callback2) {
  * @param  {String}   ok        Confirm button text
  */
 function uiConfirmDialog(title, message, callback, callback2, cancel, ok) {
-  if (debugMode) {
-    printf('showing confirm dialog from (%s)', arguments.callee.caller.name);
-  }
+  printf('showing confirm dialog from (%s)', arguments.callee.caller.name);
 
   var title   = title || 'Pandora',
       ok      = ok || 'OK',
@@ -392,10 +349,7 @@ function uiConfirmDialog(title, message, callback, callback2, cancel, ok) {
  * @param  {Number} code Error code
  */
 function uiFailedPlayback(code) {
-  if (debugMode) {
-    printd('failed playback called.');
-  }
-
+  print('failed playback called.');
   playerStop();
   Global.retryCount = 3;
   buttonTrackName.buttonLabel = '';
@@ -465,11 +419,9 @@ function uiSaveFocus() {
  * @param  {Boolean} appStart [description]
  */
 function uiShowActivatePandora(appStart) {
-  if (debugMode) {
-    print('this device is not associated with any pandora account.');
-  }
-
+  print('this device is not associated with any pandora account.');
   resetDevice();
+
   if (appStart) {
     boxeeAPI.appStarted(true);
   }
@@ -635,9 +587,7 @@ function uiPopulateStations() {
     for (var i = 0; i < Global.stationList.length; i++) {
       Global.stationList[i].isPlaying = (getCurrentStationToken() === Global.stationList[i].stationToken);
       stationBladeModel.append(Global.stationList[i]);
-      if (debugMode) {
-        printf('Adding station (name=%s, token=%s)', Global.stationList[i].stationName, Global.stationList[i].stationToken)
-      }
+      printf('Adding station (name=%s, token=%s)', Global.stationList[i].stationName, Global.stationList[i].stationToken)
     }
     return true;
   } else {
@@ -787,8 +737,7 @@ function resetDevice() {
   resetSettings();
   saveSettings();
 
-  if (debugMode)
-    print('global settings, device association, local storage');
+  print('global settings, device association, local storage');
 }
 
 
@@ -902,8 +851,8 @@ function onAreYouStillThere() {
  * Handles media status change
  */
 function onMediaStatusChanged() {
-  printfd('mediaStatusEndOfMedia: %d', boxeeAPI.mediaStatusEndOfMedia);
-  printfd('onMediaStatusChanged: %d', boxeeAPI.mediaPlayer().mediaStatus());
+  print('mediaStatusEndOfMedia: %d', boxeeAPI.mediaStatusEndOfMedia);
+  print('onMediaStatusChanged: %d', boxeeAPI.mediaPlayer().mediaStatus());
   if (boxeeAPI.mediaPlayer().mediaStatus() === boxeeAPI.mediaStatusEndOfMedia) {
     var canPlaybackContinue = checkActivityTimeout();
     if (canPlaybackContinue && (!mediaOpen || !isPlaying)) {
@@ -943,7 +892,7 @@ function play(track) {
     isAd = track.isAd;
     Global.currentTrack = track;
 
-    printfd('Sending track to player: %s', JSON.stringify(item));
+    print('Sending track to player: %s', JSON.stringify(item));
 
     if (!isAd) printf('Playing %s by %s from %s', track.label, track.artist, track.album)
     else print('Playing AD');
@@ -1017,9 +966,7 @@ function isResponseOk(response) {
  * @param  {String}   responseText
  */
 function handleResponse(type, responseText) { /*  handles get/post response data, returns proper format */
-  if (debugMode) {
-    print('handleResponse', 'raw_response: ' + responseText);
-  }
+  print('handleResponse', 'raw_response: ' + responseText);
 
   if (type === DataType.XML) {
     responseText = boxeeAPI.xmlToJson(responseText)
@@ -1041,8 +988,7 @@ function handleResponse(type, responseText) { /*  handles get/post response data
  * @return {Boolean}
  */
 function getData(url, type, onComplete, onComplete2) {
-  if (debugMode)
-    printf("url=%s", url);
+  printf("url=%s", url);
 
   if (isOffline()) {
     var response = {
@@ -1077,8 +1023,7 @@ function getData(url, type, onComplete, onComplete2) {
  * @return {Boolean}
  */
 function getPost(url, data, type, onComplete, onComplete2) {
-  if (debugMode)
-    printf("url=%s", url);
+  printf("url=%s", url);
 
   if (isOffline()) {
     var response = {
@@ -1111,10 +1056,16 @@ function getPost(url, data, type, onComplete, onComplete2) {
  * @param  {Number} code      Response code
  * @param  {Object} response  Pandora response object
  * @param  {Object} handler   Request handler object
+ *
+ * Handler Object
+ *    parent: parent (calling) method,
+ *    args: argument passed to parent method,
+ *    target: target handler function,
+ *    callback: callback function to be passed to the target
  */
 function handle_pandoraResponse(code, response, handler) {
   if (isResponseOk(response)) {
-    printd('response is OK');
+    print('response is OK');
     Global.retryCount = 3;
     handler.target((new PandoraResult(-1, response)), handler.callback, handler.args);
 
@@ -1160,40 +1111,51 @@ function handle_pandoraResponse(code, response, handler) {
   }
 }
 
+
 /*  helper function for making pandora api calls. this specific
         function does NOT use handle_pandoraResponse. the callback
         function must manager failures and errors on its own. */
+
+/**
+ * Makes API requests to the pandora server. This specific function does NOT
+ * use handle_pandoraResponse. the callback function must manager failures and
+ * errors on its own.
+ * @param  {String}   _method
+ * @param  {Object}   _data
+ * @param  {Function} callback
+ * @param  {Function} callback2
+ */
 function callServer(_method, _data, callback, callback2) {
   var method = "/apps/pandora2/?method=" + _method;
-  if (Global.userAuthToken !== undefined && Global.userAuthToken !== null)
+  if (Global.userAuthToken !== undefined && Global.userAuthToken !== null) {
     method = method + "&auth_token=" + encodeURIComponent(Global.userAuthToken);
+  }
 
-  if (debugMode)
-    printf('method: %s, request: %s', _method, JSON.stringify(_data));
+  printf('method: %s, request: %s', _method, JSON.stringify(_data));
 
-  /*  decide if we should display loading dialog */
-  if (!['track.explainTrack', 'music.search'].contains(_method))
+  // show loading dialog for track info and search
+  if (!['track.explainTrack', 'music.search'].contains(_method)) {
     uiShowWait();
+  }
 
   getPost(Global.host + method, _data, DataType.JSON, callback, callback2);
 }
 
-/*  helper function for making pandora api calls. this specific
-        function sends request responsed to handle_pandoraResponse
-        to be managed. this method is preferred.
 
-        handler object
-            parent: parent (calling) method,
-            args: argument passed to parent method,
-            target: target handler function,
-            callback: callback function to be passed to the target */
+/**
+ * Makes API requests to the pandora server. Sends request responsed to
+ * handle_pandoraResponse() to be managed. this method is preferred.
+ * @param  {[type]} _method [description]
+ * @param  {[type]} _data   [description]
+ * @param  {[type]} handler [description]
+ * @return {[type]}         [description]
+ */
 function callServer2(_method, _data, handler) {
   var method = "/apps/pandora2/?method=" + _method;
   if (Global.userAuthToken !== undefined && Global.userAuthToken !== null)
     method = method + "&auth_token=" + encodeURIComponent(Global.userAuthToken);
 
-  if (debugMode)
-    printf('method: %s, request: %s', _method, JSON.stringify(_data));
+  printf('method: %s, request: %s', _method, JSON.stringify(_data));
 
   /*  decide if we should display loading dialog */
   if (!['track.explainTrack', 'music.search'].contains(_method))
@@ -1202,20 +1164,33 @@ function callServer2(_method, _data, handler) {
   getPost(Global.host + method, _data, DataType.JSON, handle_pandoraResponse, handler);
 }
 
-/*  device.generateDeviceActivationCode
-        used for creating an account on the web site (e.g. http://www.pandora.com/<partner>)
-        and will link to the deviceId to the new account. After the user has created the Pandora
-        account, the device can login using the deviceId */
+
+/**
+ * Requests auth token from pandora api
+ * @param  {Function} callback
+ *
+ * @description
+ * device.generateDeviceActivationCode - used for creating an account on the
+ * web site (e.g. http://www.pandora.com/<partner>) and will link to the
+ * deviceId to the new account. After the user has created the Pandora account,
+ * the device can login using the deviceId
+ */
 function getAuthToken(callback) {
   print('requesting device link token...');
-  callServer2("device.generateDeviceActivationCode", {
+
+  var data = {
     "deviceId": Global.deviceId
-  }, {
+  };
+
+  var handler = {
     parent: getAuthToken,
     target: handle_getAuthToken,
     callback: callback
-  });
+  };
+
+  callServer2("device.generateDeviceActivationCode", data, handler);
 }
+
 
 /*  device.generateDeviceActivationCode
         handles the returned result from generateDeviceActivationCode request */
@@ -1233,7 +1208,7 @@ function handle_getAuthToken(request, callback) {
         authenticates the user/device for further access to the pandora system,
         after the calling application has itself been authenticated */
 function userLogin(callback, blocker) {
-  if (debugMode) printf('logging in via deviceId (%s)', Global.deviceId);
+  printf('logging in via deviceId (%s)', Global.deviceId);
   callServer2("auth.userLogin", {
     'deviceId': Global.deviceId
   }, {
@@ -1262,7 +1237,7 @@ function handle_userLogin(request, callback) {
     if (request.response.stations !== undefined) Global.stationList = request.response.stations;
     else if (Global.stationList.length === 0) print('no stations returned with login and no stations previously loaded');
     if (Global.status !== PandoraStatus.PLAYING) Global.status = PandoraStatus.LOGGEDIN;
-    if (debugMode) print('login was successful. this device is associated to your pandora account.');
+    print('login was successful. this device is associated to your pandora account.');
     if (isFunction(callback)) callback(request);
   } else {
     printf("ERROR %d, %s", request.code, request.description);
@@ -1339,7 +1314,7 @@ function handle_disassociateDevice(request, callback) {
         retrieves the list of stations that this user has created and
         the list of shared stations to which the user has listened */
 function getStationList(callback) {
-  if (debugMode) print('refreshing user station list');
+  print('refreshing user station list');
   callServer2("user.getStationList", {
     "userAuthToken": Global.userAuthToken
   }, {
@@ -1614,8 +1589,7 @@ function handle_autoComplete(code, response, callback) {
 /*  station.createStation (from track token / music type)
         This method creates a new station based on a track’s artist or song (a trackToken). */
 function createStationFromTrackToken(_args, callback) {
-  if (debugMode)
-    printf("create new station from track token (%s, %s)", _args.token, _args.type);
+  printf("create new station from track token (%s, %s)", _args.token, _args.type);
 
   if (Global.status === PandoraStatus.OFFLINE) {
     print('Error. not logged in, unable to create station');
@@ -1638,8 +1612,7 @@ function createStationFromTrackToken(_args, callback) {
 /*  station.createStation (from music token)
         This method creates a new station based on the results of a search (a musicToken) */
 function createStationFromToken(token, callback) {
-  if (debugMode)
-    print(token);
+  print(token);
 
   if (Global.status === PandoraStatus.OFFLINE) {
     print('Error. not logged in, unable to create station');
@@ -1713,9 +1686,9 @@ function renameStation(_args, callback) {
         handles the returned result from renameStation request */
 function handle_renameStation(request, callback) {
   if (request.isOk) {
-    if (debugMode) printf('successfully renamed station (%s)', request.response.stationName);
+    printf('successfully renamed station (%s)', request.response.stationName);
     if (getCurrentStationToken() === request.response.stationToken) {
-      if (debugMode) print('renaming currently playing station. update ui');
+      print('renaming currently playing station. update ui');
       stationLabel.text = request.response.stationName;
       Global.currentStation.stationName = request.response.stationName;
     }
@@ -1741,8 +1714,7 @@ function deleteStation(token, callback) {
   }
 
   if (getCurrentStationToken() === token) {
-    if (debugMode)
-      print('deleting currently playing station. stopping playback');
+    print('deleting currently playing station. stopping playback');
     playerStop();
   }
 
@@ -1770,8 +1742,7 @@ function deleteStation(token, callback) {
         handles the returned result from deleteStation request */
 function handle_deleteStation(request, callback) {
   if (request.isOk || request.code === 1006) {
-    if (debugMode)
-      print('successfully deleted station or station was already deleted from another location');
+    print('successfully deleted station or station was already deleted from another location');
     getStationList(callback);
   } else if (request.code === 1000) {
     uiOkDialog(request.description, callback);
@@ -1833,8 +1804,7 @@ function handle_addFeedback(request, callback, songRating) {
       skipSong();
     } else uiUpdateCurrentTrack(buttonThumbDown);
 
-    if (debugMode)
-      print('feedback submitted successfully.');
+    print('feedback submitted successfully.');
   } else if (request.code === 1000) {
     forceFocus(failedFocus);
     uiOkDialog(request.description); //, (function(){ forceFocus(failedFocus); }));
@@ -1866,8 +1836,7 @@ function addBookmark(_args, callback) {
         handles the returned result from addBookmark request */
 function handle_addBookmark(request, callback) {
   if (request.isOk) {
-    if (debugMode)
-      print('bookmark created successfully');
+    print('bookmark created successfully');
     uiOkDialog('Successfully bookmarked! Check out your bookmarks at www.pandora.com/profile/bookmarks/', callback);
   } else if (request.code === 1000) {
     uiOkDialog(request.description, callback)
@@ -1882,8 +1851,7 @@ function handle_addBookmark(request, callback) {
         This method ia called at the time the audio ad is going to be played. If there is an
         audio ad to be played, the audioUrl result will be returned. */
 function getAdMetadata(token, callback) {
-  if (debugMode)
-    printf('token=%s', token);
+  printf('token=%s', token);
 
   var data = {
     adToken: token,
@@ -1991,8 +1959,7 @@ function getNextTrack() {
 /*  adds the given track to the skipped track list */
 function addSkippedTrack(trackToken) {
   try {
-    if (debugMode)
-      printf('todken=%s', trackToken);
+    printf('todken=%s', trackToken);
 
     var skiplist = getSkipList();
 
@@ -2056,8 +2023,7 @@ function setStation(stationIndex) {
 
 function setStationFromToken(stationToken) {
   try {
-    if (debugMode)
-      printf('set station with token (%s)', stationToken);
+    printf('set station with token (%s)', stationToken);
 
     for (var i in Global.stationList) {
       if (Global.stationList[i].stationToken === stationToken)
@@ -2091,8 +2057,7 @@ function isSkipAllowed() {
 
   if (Global.currentTrack) {
     if (Global.currentTrack.isAd) {
-      if (debugMode)
-        print('skip not allowed, ad is playing');
+      print('skip not allowed, ad is playing');
       return false
     }
 
@@ -2111,9 +2076,9 @@ function isSkipAllowed() {
     }
 
     if (savedSkipList) storeSkippedTracks();
-    if (debugMode) skipCount = skipList.length;
+    skipCount = skipList.length;
     if (skipList.length < Global.skipTrackLimit) return true;
-    if (debugMode) print('skip not allowed, current limit reached');
+    print('skip not allowed, current limit reached');
     return false;
   }
 
@@ -2171,7 +2136,7 @@ function playNextTrack() {
     return false;
   }
 
-  printfd("%d track(s) left in queue.", Global.pendingTracks.length);
+  print("%d track(s) left in queue.", Global.pendingTracks.length);
 
   /* per pandora certification, ads should also be added into the previously played track list. */
   if (!Global.dontAddNextTrack && !Global.lastTrackFailed && Global.currentTrack) { // && !Global.currentTrack.isAd)
@@ -2221,7 +2186,7 @@ function addPlayedTrack(track) {
       return false;
   }
 
-  printfd("adding new track: %s", JSON.stringify(newTrack));
+  print("adding new track: %s", JSON.stringify(newTrack));
   if (!track.isAd) printf('Adding %s by %s to playedTracks list', track.label, track.artist)
   else print('Adding AD to playedTracks list');
 
@@ -2231,8 +2196,7 @@ function addPlayedTrack(track) {
 }
 
 function loadStationForPlayback() {
-  if (debugMode)
-    print('loading new station token...');
+  print('loading new station token...');
 
   if (!hasStations()) {
     print('Error. there are currently no stations loaded.')
@@ -2248,8 +2212,7 @@ function loadStationForPlayback() {
   if (token) {
     var setTokenOk = setStationFromToken(token);
     if (setTokenOk) {
-      if (debugMode)
-        print('last station used as been loaded successfully.')
+      print('last station used as been loaded successfully.')
       return true;
     }
   }
@@ -2263,8 +2226,7 @@ function loadStationForPlayback() {
 }
 
 function startPlayback(result) {
-  if (debugMode)
-    print('starting playback')
+  print('starting playback')
 
   buttonPlayPause.focus = true;
   forceFocus(buttonPlayPause);
@@ -2301,7 +2263,7 @@ function getSkipList() {
 
     if (Global.skippedTracks[token] === undefined) Global.skippedTracks[token] = [];
 
-    printfd('token=%s, item=%d', token, Global.skippedTracks[token].length);
+    print('token=%s, item=%d', token, Global.skippedTracks[token].length);
     return Global.skippedTracks[token];
   } catch (e) {
     printError(e);
@@ -2317,7 +2279,7 @@ function getPlayedTracks() {
     if (token) {
       if (Global.playedTracks[token] === undefined)
         Global.playedTracks[token] = [];
-      printfd('token=%s, items=%d', token, Global.playedTracks[token].length);
+      print('token=%s, items=%d', token, Global.playedTracks[token].length);
       return Global.playedTracks[token];
     } else {
       print('Error. Unable to get played track list. Current station token does not exist.');
@@ -2353,8 +2315,7 @@ function getCurrentStationToken() {
 }
 
 function getStationByToken(token) {
-  if (debugMode)
-    printf('token=%s', token);
+  printf('token=%s', token);
   if (Global.stationList.length > 0) {
     for (var i = 0; i < Global.stationList.length; i++) {
       if (Global.stationList[i].stationToken === token) return Global.stationList[i];
