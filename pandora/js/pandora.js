@@ -14,6 +14,7 @@ var PandoraStatus = {
   LOGGEDOUT: 4
 }
 
+
 /*
  * Set activity timestamp. should be set on each user interaction
  */
@@ -29,14 +30,16 @@ function updateActivityTimestamp() {
   }
 }
 
+
 /*
  * Checks the lastActivityTimestamp and compares it to the current time
  * if the diff is >= the activityTimeoutLimit we must stop playback and
  * ask the user if they are still listening.
  */
 function checkActivityTimeout() {
-  if (debugMode)
+  if (debugMode) {
     print('Checking activity timeout!');
+  }
 
   var current = new Date();
   var diff = current - Global.lastActivityTimestamp;
@@ -47,20 +50,23 @@ function checkActivityTimeout() {
     return false;
   }
 
-  if (debugMode)
+  if (debugMode) {
     print('Playback can continue.');
+  }
 
   // playback can continue
   return true;
 }
 
-/*
- * Checks if Boxee TV currenly has an active network connection
- * @returns  True if Boxee TV has no connection
+
+/**
+ * Checks if boxee device currently has an active network connection
+ * @return {Boolean} True if Boxee TV has no connection
  */
 function isOffline() {
   return (boxeeAPI.hasInternetConnection !== undefined && !boxeeAPI.hasInternetConnection());
 }
+
 
 /*
  * Gets the Boxee TV device ID
@@ -70,20 +76,22 @@ function getDeviceId() {
   return boxeeAPI.deviceId().toLowerCase();
 }
 
+
 /*
  * Checks if object is typeof function
  * @param    f   object to test for typeof function
  * @returns  True if object is function
  */
+
 function isFunction(f) {
   return (typeof f === 'function');
 }
 
-/*
+
+/**
  * Wraps supplied argument in function, used when we need to execute function from callback and pass arguments
- * @param    Function
- * @param    Anything
- * @returns  Passed parameter wrapped in a function
+ * @param  {Function} Callback
+ * @return {Object} Anything here really
  * @example
  * function test(string) { console.log(string) }
  * callback(sendWithArgs(test, "hello"));
@@ -97,6 +105,7 @@ function sendWithArgs() {
   });
 }
 
+
 /**
  * Prints anything to the log, only specify a message and the calling functions name will be used
  * @param    item1   Message or function name. See function description
@@ -106,12 +115,12 @@ function print(item1, item2) {
   if (item2 === undefined) {
     item1 = (typeof item1 !== 'string') ? JSON.stringify(item1) : item1;
     boxeeAPI.logInfo('[pandora] ' + item1);
-  }
-  else {
+  } else {
     item2 = (typeof item2 !== 'string') ? JSON.stringify(item2) : item2;
     boxeeAPI.logInfo('[pandora] (' + item1 + ') ' + item2);
   }
 }
+
 
 /**
  * Prints anything to the log, only specify a message and the calling functions name will be used
@@ -123,13 +132,13 @@ function printd(item1, item2) {
     if (item2 === undefined) {
       item1 = (typeof item1 !== 'string') ? JSON.stringify(item1) : item1;
       boxeeAPI.logInfo('pandora [' + arguments.callee.caller.name + '] ' + item1);
-    }
-    else {
+    } else {
       item2 = (typeof item2 !== 'string') ? JSON.stringify(item2) : item2;
       boxeeAPI.logInfo('pandora [' + item1 + '] ' + item2);
     }
   }
 }
+
 
 /**
  * Same as print(). Prints anything to the log but uses sprintf
@@ -141,6 +150,7 @@ function printf(message) {
   else if (args.length > 1) boxeeAPI.logInfo('[pandora] ' + vsprintf(message, args.slice(1)));
 }
 
+
 /**
  * Same as print(). Prints anything to the log but uses sprintf
  * @param    message Message to print
@@ -148,10 +158,14 @@ function printf(message) {
 function printfd(message) {
   if (debugMode) {
     var args = Array.prototype.slice.call(arguments);
-    if (args.length === 1) boxeeAPI.logInfo('pandora [' + arguments.callee.caller.name + '] ' + message);
-    else if (args.length > 1) boxeeAPI.logInfo('pandora [' + arguments.callee.caller.name + '] ' + vsprintf(message, args.slice(1)));
+    if (args.length === 1) {
+      boxeeAPI.logInfo('pandora [' + arguments.callee.caller.name + '] ' + message);
+    } else if (args.length > 1) {
+      boxeeAPI.logInfo('pandora [' + arguments.callee.caller.name + '] ' + vsprintf(message, args.slice(1)));
+    }
   }
 }
+
 
 /**
  * Processes an error object and prints to log
@@ -161,6 +175,7 @@ function printError(e) {
   boxeeAPI.logError(sprintf('pandora [%s] Error: %s [%s:%d]', arguments.callee.caller.name, e.message, e.fileName, e.lineNumber));
 }
 
+
 /**
  * Prints track object to the log
  * @param    track   Pandora track object
@@ -168,25 +183,35 @@ function printError(e) {
 function printTrack(track) {
   if (debugMode) {
     boxeeAPI.logInfo('======== Pandora Track Dump START ========');
+
     if (track.isAd) {
       boxeeAPI.logInfo(sprintf('isAd  ->  %s', track.isAd));
       boxeeAPI.logInfo(sprintf('adToken  ->  %s', track.adToken));
     }
+
     boxeeAPI.logInfo(sprintf('label  ->  %s', track.label));
-    if (track.isAd)
+
+    if (track.isAd) {
       boxeeAPI.logInfo(sprintf('company  ->  %s', track.company));
+    }
+
     if (!track.isAd) {
       boxeeAPI.logInfo(sprintf('album  ->  %s', track.album));
       boxeeAPI.logInfo(sprintf('artist  ->  %s', track.artist));
       boxeeAPI.logInfo(sprintf('songRating  ->  %s', track.songRating));
       boxeeAPI.logInfo(sprintf('allowFeedback  ->  %s', track.allowFeedback));
     }
+
     boxeeAPI.logInfo(sprintf('thumbnail  ->  %s', track.thumbnail));
-    if (!track.isAd)
+
+    if (!track.isAd) {
       boxeeAPI.logInfo(sprintf('trackToken  ->  %s', track.trackToken));
+    }
+
     boxeeAPI.logInfo('======== Pandora Track Dump END ========');
   }
 }
+
 
 function PandoraResult(_code, _response) {
   this.code = _code;
@@ -195,6 +220,12 @@ function PandoraResult(_code, _response) {
   this.response = _response;
 }
 
+
+/**
+ * Pandora Error Responses
+ * @param  {number} code Error code
+ * @return {string}      Error description string
+ */
 function getErrorReponse(code) {
   switch (code) {
     case 12:
@@ -276,6 +307,11 @@ function getErrorReponse(code) {
   }
 }
 
+
+/**
+ * Shows the wait dialog
+ * @param  {Function} callback
+ */
 function uiShowWait(callback) {
   if (!loading) {
     loading = true;
@@ -283,42 +319,83 @@ function uiShowWait(callback) {
   }
 }
 
+
+/**
+ * Hides the wait dialog
+ */
 function uiHideWait() {
   boxeeAPI.hideWaitDialog();
   loading = false;
 }
 
-function uiKeyboardDialog(message, initval, callback, callback2) {
-  printf('showing keyboard dialog from (%s)', arguments.callee.caller.name);
-  boxeeAPI.showKeyboardDialog('Pandora', callback, false, initval, message, true, callback2, boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg')
 
-  //    boxeeAPI.showKeyboardDialog({
-  //        title: 'Pandora',
-  //        labelTitle: 'Enter your password',
-  //        background: ''
-  //    }, callback, callback2);
+/**
+ * Show Keyboard Dialog
+ * @param  {String}   message   Dialog message text
+ * @param  {String}   initval   Inital keyboard text
+ * @param  {Function} callback
+ * @param  {Function} callback2
+ */
+function uiKeyboardDialog(message, initval, callback, callback2) {
+  if (debugMode) {
+    printf('showing keyboard dialog from (%s)', arguments.callee.caller.name);
+  }
+
+  var splash = boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg';
+  boxeeAPI.showKeyboardDialog('Pandora', callback, false, initval, message, true, callback2, splash)
 }
 
+
+/**
+ * Show Ok Dialog
+ * @param  {String}   message   Dialog message text
+ * @param  {Function} callback
+ * @param  {Function} callback2
+ */
 function uiOkDialog(message, callback, callback2) {
-  if (!isFunction(callback2))
+  if (!isFunction(callback2)) {
     callback2 = callback;
-  if (debugMode)
+  }
+
+  if (debugMode) {
     printf('showing ok dialog from (%s)', arguments.callee.caller.name);
+  }
+
   boxeeAPI.showOkDialog('Pandora', message, callback, callback2, 'OK', true, boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg');
 }
 
+
+/**
+ * [uiConfirmDialog description]
+ * @param  {String}   title     Dialog title
+ * @param  {String}   message   Dialog message text
+ * @param  {Function} callback
+ * @param  {Function} callback2
+ * @param  {String}   cancel    Cancel button text
+ * @param  {String}   ok        Confirm button text
+ */
 function uiConfirmDialog(title, message, callback, callback2, cancel, ok) {
-  if (debugMode)
+  if (debugMode) {
     printf('showing confirm dialog from (%s)', arguments.callee.caller.name);
-  boxeeAPI.showConfirmDialog((title || 'Pandora'), message, callback, callback2, (ok || 'OK'), (cancel || 'Cancel'), true, boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg')
+  }
+
+  var title   = title || 'Pandora',
+      ok      = ok || 'OK',
+      cancel  = cancel || 'Cancel',
+      bg      = boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg';
+  boxeeAPI.showConfirmDialog(title, message, callback, callback2, ok, cancel, true, bg)
 }
 
-/*
- * When something fails and we can't continue playing music,
- * this is our fallback. stops player, resets retry & ui
+
+/**
+ * Handles failures, stops player, resets ui, notifies user.
+ * @param  {Number} code Error code
  */
 function uiFailedPlayback(code) {
-  printd('failed playback called.');
+  if (debugMode) {
+    printd('failed playback called.');
+  }
+
   playerStop();
   Global.retryCount = 3;
   buttonTrackName.buttonLabel = '';
@@ -326,9 +403,11 @@ function uiFailedPlayback(code) {
   albumArtImage.source = '';
   Global.currentTrack = null;
   forceFocus(buttonPlayPause);
-  if (code !== undefined)
+  if (code !== undefined) {
     uiOkDialog(getErrorReponse(code));
+  }
 }
+
 
 /*
  * Sometimes we just loose focus, don't like this hack
@@ -336,6 +415,7 @@ function uiFailedPlayback(code) {
  */
 function uiSaveFocus() {
   var controls, i;
+
   if (root.allPanelsClosed()) {
     controls = [
       buttonPlayPause,
@@ -349,38 +429,55 @@ function uiSaveFocus() {
       buttonLogout
     ];
 
-    for (i = 0; i < controls.length; i++)
-      if (controls[i].activeFocus) return;
+    for (i = 0; i < controls.length; i++) {
+      if (controls[i].activeFocus) {
+        return;
+      }
+    }
 
     forceFocus(buttonPlayPause);
-  }
-  else if (quickStationBlade.isOpen) {
-    if (quickStationBlade.getCloseButton().activeFocus || quickStationBladeList.activeFocus) return;
+
+  } else if (quickStationBlade.isOpen) {
+    if (quickStationBlade.getCloseButton().activeFocus || quickStationBladeList.activeFocus)
+      return;
     forceFocus(quickStationBladeList);
-  }
-  else if (mgmtBlade.isOpen) {
-    if (mgmtBlade.getCloseButton().activeFocus || mgmtBladeList.activeFocus) return;
+
+  } else if (mgmtBlade.isOpen) {
+    if (mgmtBlade.getCloseButton().activeFocus || mgmtBladeList.activeFocus)
+      return;
     forceFocus(mgmtBladeList);
-  }
-  else if (searchBlade.isOpen) {
-    if (keyboard.activeFocus || searchList.activeFocus) return;
+
+  } else if (searchBlade.isOpen) {
+    if (keyboard.activeFocus || searchList.activeFocus)
+      return;
     forceFocus(keyboard);
-  }
-  else if (stationBlade.isOpen) {
-    if (stationBlade.getCloseButton().activeFocus || buttonCreateStation.activeFocus || stationBladeList.activeFocus) return;
+
+  } else if (stationBlade.isOpen) {
+    if (stationBlade.getCloseButton().activeFocus || buttonCreateStation.activeFocus || stationBladeList.activeFocus)
+      return;
     forceFocus(stationBladeList);
   }
 }
 
+
+/**
+ * Shows requires activation screen
+ * @param  {Boolean} appStart [description]
+ */
 function uiShowActivatePandora(appStart) {
-  print('this device is not associated with any pandora account.');
+  if (debugMode) {
+    print('this device is not associated with any pandora account.');
+  }
+
   resetDevice();
-  if (appStart)
+  if (appStart) {
     boxeeAPI.appStarted(true);
+  }
   activeArea.visible = false;
   activatePandora.visible = true;
   forceFocus(activateButton);
 }
+
 
 /*
  * Sets the main area visible when users are logged in, populates
@@ -406,27 +503,39 @@ function uiShowPandora(appStart) {
   activeArea.visible = true;
   activatePandora.visible = false;
 
-  if (!uiPopulateStations())
-    getStationList(uiNoStationsAtLaunch)
-  else
-    startPlayback();
-}
-
-function uiNoStationsAtLaunch(result) {
-  if (result) {
-    //station list populated, start playback
+  if (!uiPopulateStations()) {
+    getStationList(uiNoStationsAtLaunch);
+  } else {
     startPlayback();
   }
-  else {
+}
+
+
+/**
+ * Starts playback or shows the search blade to create a station
+ * @param  {Boolean} result False will show search blade, true will start playback
+ */
+function uiNoStationsAtLaunch(result) {
+  if (result) {
+    startPlayback();
+  } else {
     //no stations! maybe a new user? open the create station panel
     searchBlade.open(keyboard);
   }
 }
 
+
+/**
+ * Clears the played tracks
+ */
 function uiClearPlayedTracks() {
   playedTrackModel.clear();
 }
 
+
+/**
+ * Resets the UI
+ */
 function uiResetGUI() {
   adlabel.text = '';
   stationLabel.text = '';
@@ -438,15 +547,23 @@ function uiResetGUI() {
   playedTrackModel.clear();
 }
 
+
+/**
+ * Loads played tracks into the played track listview
+ */
 function uiLoadPlayedTracks() {
-  if (playedTrackModel.count !== 0) return;
+  if (playedTrackModel.count !== 0) {
+    return
+  }
 
   var tracks = getPlayedTracks();
   if (tracks) {
-    for (var i = 0; i < tracks.length; i++)
+    for (var i = 0; i < tracks.length; i++) {
       playedTrackModel.append(tracks[i]);
+    }
   }
 }
+
 
 /*
  * Updates the ui with all required information based on the
@@ -462,11 +579,11 @@ function uiUpdateCurrentTrack(focusItem) {
       albumArtImage.source = Global.currentTrack.thumbnail;
       buttonTrackName.buttonLabel = Global.currentTrack.label;
       buttonArtistName.buttonLabel = sprintf("<font color='grey'>By</font> %s<br/><font color='grey'>On</font> %s", Global.currentTrack.artist, Global.currentTrack.album);
-    }
-    else {
+    } else {
       adlabel.text = Global.currentTrack.label;
-      if (Global.currentTrack.company)
+      if (Global.currentTrack.company) {
         adlabel.text = Global.currentTrack.company + "\n" + adlabel.text;
+      }
       albumArtImage.source = Global.currentTrack.thumbnail;
       buttonTrackName.buttonLabel = buttonArtistName.buttonLabel = "";
     }
@@ -481,25 +598,33 @@ function uiUpdateCurrentTrack(focusItem) {
     }
   }
 
-  if (saveFocus) uiSaveFocus();
+  if (saveFocus) {
+    uiSaveFocus();
+  }
 }
 
+
+/**
+ * Updates the station list in UI
+ */
 function uiUpdateStationList() {
   try {
     var selected = 0;
     var currentToken = getCurrentStationToken();
-    for (var i = 0; i < stationBladeModel.count; i++) { //10-04 19:51:05.983 W [--MAIN--] main.cpp:29 file:///.boxee/apps/pandora/js/pandora.js:500: TypeError: Result of expression 'Global.stationList[i]' [undefined] is not an object.
+    for (var i = 0; i < stationBladeModel.count; i++) {
       Global.stationList[i].isPlaying = (currentToken === Global.stationList[i].stationToken);
       stationBladeModel.setProperty(i, 'isPlaying', (currentToken === stationBladeModel.get(i).stationToken))
-      if (Global.stationList[i].isPlaying) selected = i;
+      if (Global.stationList[i].isPlaying) {
+        selected = i;
+      }
     }
     return selected;
-  }
-  catch (e) {
+  } catch (e) {
     printf('ERROR. Unable to determin currently played station (%s)', e.message);
     return 0;
   }
 }
+
 
 /*
  * Populates the ui with users stations if available
@@ -510,57 +635,102 @@ function uiPopulateStations() {
     for (var i = 0; i < Global.stationList.length; i++) {
       Global.stationList[i].isPlaying = (getCurrentStationToken() === Global.stationList[i].stationToken);
       stationBladeModel.append(Global.stationList[i]);
-      if (debugMode)
+      if (debugMode) {
         printf('Adding station (name=%s, token=%s)', Global.stationList[i].stationName, Global.stationList[i].stationToken)
+      }
     }
     return true;
-  }
-  else {
+  } else {
     stationBladeModel.clear()
     print('No user stations available!');
     return false;
   }
 }
 
+
+/**
+ * Store setting to boxee client
+ * @param  {String} key       Settings key
+ * @param  {String} value     Setting value
+ * @param  {Boolean} dontSave Save unsaved settings
+ */
 function storeSetting(key, value, dontSave) {
   boxeeAPI.setAppSetting(key, value);
-  if (dontSave === undefined) saveSettings();
+  if (!dontSave) {
+    saveSettings();
+  }
 }
 
+
+/**
+ * Load setting from boxee client
+ * @param  {string} key setting key
+ * @return {String}     matching setting
+ */
 function loadSetting(key) {
   return boxeeAPI.appSetting(key);
 }
 
+
+/**
+ * Save unsaved settings to client
+ */
 function saveSettings() {
   return boxeeAPI.saveAppSetting();
 }
 
+
+/**
+ * Reset app settings
+ */
 function resetSettings() {
   boxeeAPI.resetAppSetting();
 }
 
+
+/**
+ * Store skipped tracks to app storage
+ * @return {[type]} [description]
+ */
 function storeSkippedTracks() {
   storeSetting('skippedTracks', Global.skippedTracks);
   saveSettings();
 }
 
+
+/**
+ * Store played tracks to app storage
+ */
 function storePlayedTracks() {
   storeSetting('playedTracks', Global.playedTracks);
   saveSettings();
 }
 
+
+/**
+ * Load skipped tracks from app storage
+ */
 function loadSkippedTracks() {
   var skippedTracks = loadSetting('skippedTracks');
-  if (skippedTracks !== undefined && skippedTracks)
+  if (skippedTracks !== undefined && skippedTracks) {
     Global.skippedTracks = skippedTracks;
+  }
 }
 
+
+/**
+ * Load played tracks from app storage
+ */
 function loadPlayedTracks() {
   var playedTracks = loadSetting('playedTracks');
   if (playedTracks !== undefined && playedTracks)
     Global.playedTracks = playedTracks;
 }
 
+
+/**
+ * Resets user session
+ */
 function resetSession() {
   uiResetGUI();
 
@@ -580,6 +750,10 @@ function resetSession() {
   mediaPlayer.onError = undefined;
 }
 
+
+/**
+ * Resets app, including user and device links
+ */
 function resetDevice() {
   uiResetGUI();
 
@@ -617,29 +791,41 @@ function resetDevice() {
     print('global settings, device association, local storage');
 }
 
+
+/**
+ * Stops media playback
+ * @return {Boolean} returns false on error
+ */
 function playerStop() {
   try {
     boxeeAPI.mediaPlayer().stop();
     Global.status = PandoraStatus.LOGGEDIN;
     return true;
-  }
-  catch (e) {
+  } catch (e) {
     printf('Error. unable to stop playback, maybe nothing is playing? (%s)', e.message);
     return false;
   }
 }
 
+
+/**
+ * Pauses media playback
+ * @return {Boolean} returns false on error
+ */
 function playerPause() {
   try {
     boxeeAPI.mediaPlayer().togglePause()
     return true;
-  }
-  catch (e) {
+  } catch (e) {
     printf('Error. unable to pause/resume playback, maybe nothing is playing? (%s)', e.message);
     return false;
   }
 }
 
+
+/**
+ * Handles media open state change
+ */
 function onOpenChanged() {
   mediaOpen = boxeeAPI.mediaPlayer().isOpen();
 
@@ -648,27 +834,41 @@ function onOpenChanged() {
 
     addPlayedTrack(Global.currentTrack);
 
-    if (!Global.currentTrack.isAd) playCount++;
-    else adCount++;
+    if (!Global.currentTrack.isAd) {
+      playCount++;
+    } else {
+      adCount++;
+    }
 
     Global.failedTrackCount = 0;
     Global.lastTrackFailed = false;
     Global.status = PandoraStatus.PLAYING;
     uiUpdateCurrentTrack();
-  }
-  else {
+  } else {
     Global.status = PandoraStatus.LOGGEDIN;
   }
 }
 
+
+/**
+ * Sets the media state on state change
+ */
 function onMediaStateChanged() {
   mediaState = boxeeAPI.mediaPlayer().mediaState();
 }
 
+
+/**
+ * Sets the pause state on state change
+ */
 function onPauseChanged() {
   isPlaying = (boxeeAPI.mediaPlayer().mediaState() !== 2);
 }
 
+
+/**
+ * Handles error change state
+ */
 function onErrorChanged() {
   failedCount++;
   Global.failedTrackCount++;
@@ -680,33 +880,46 @@ function onErrorChanged() {
   if (Global.failedTrackCount === Global.failedTrackLimit) {
     Global.failedTrackCount = 0;
     uiOkDialog('Too many failed tracks! Stopping playback.', uiFailedPlayback);
-  }
-  else {
+  } else {
     printf('failed play count at %d', Global.failedTrackCount);
     playerStop();
     playNextTrack();
   }
 }
 
+
+/**
+ * Called from uiOkDialog via onMediaStatusChanged
+ */
 function onAreYouStillThere() {
   updateActivityTimestamp();
   forceFocus(buttonPlayPause);
   playNextTrack();
 }
 
+
+/**
+ * Handles media status change
+ */
 function onMediaStatusChanged() {
   printfd('mediaStatusEndOfMedia: %d', boxeeAPI.mediaStatusEndOfMedia);
   printfd('onMediaStatusChanged: %d', boxeeAPI.mediaPlayer().mediaStatus());
   if (boxeeAPI.mediaPlayer().mediaStatus() === boxeeAPI.mediaStatusEndOfMedia) {
     var canPlaybackContinue = checkActivityTimeout();
-    if (canPlaybackContinue) {
-      if (!mediaOpen || !isPlaying)
+    if (canPlaybackContinue && (!mediaOpen || !isPlaying)) {
         playNextTrack();
+    } else {
+      uiOkDialog('Are you still there?', onAreYouStillThere);
     }
-    else uiOkDialog('Are you still there?', onAreYouStillThere);
   }
 }
 
+
+/**
+ * Play a track
+ * @param  {MediaItem} track Track to play
+ * @return {Boolean}         Returns true on successful playback
+ */
 function play(track) {
   try {
     // only call playerStop if media is open
@@ -736,15 +949,15 @@ function play(track) {
     else print('Playing AD');
 
     printf("%d track(s) left in queue.", Global.pendingTracks.length);
-    if (Global.pendingTracks.length && Global.pendingTracks.last().isTrack)
+    if (Global.pendingTracks.length && Global.pendingTracks.last().isTrack) {
       printf("Next track is %s by %s", Global.pendingTracks.last().item.songName, Global.pendingTracks.last().item.artistName);
-    else if (Global.pendingTracks.length && Global.pendingTracks.last().isAd)
+    } else if (Global.pendingTracks.length && Global.pendingTracks.last().isAd) {
       print("Next track is an AD");
+    }
 
     boxeeAPI.mediaPlayer().open(item);
     return true;
-  }
-  catch (e) {
+  } catch (e) {
     printError(e);
     failedCount++;
     Global.failedTrackCount++;
@@ -754,8 +967,7 @@ function play(track) {
     if (Global.failedTrackCount === Global.failedTrackLimit) {
       Global.failedTrackCount = 0;
       uiOkDialog('Too many failed tracks! Stopping playback.', uiFailedPlayback);
-    }
-    else {
+    } else {
       printf('failed play count at %d', Global.failedTrackCount);
       playerStop();
       playNextTrack();
@@ -765,8 +977,18 @@ function play(track) {
   }
 }
 
-/* API & URL RETRIEVAL HELPERS */
 
+
+
+//  START API & URL RETRIEVAL HELPERS
+//  ---------------------------------
+
+
+/**
+ * Validates a server response
+ * @param  {Object}  response Response Object
+ * @return {Boolean}          True on valid response
+ */
 function isResponseOk(response) {
   if (response === undefined || !response) {
     print("Error. RESPONSE IS NONE (flow)");
@@ -781,27 +1003,43 @@ function isResponseOk(response) {
   var status = response.stat;
 
   if (status === "fail") {
-    if (response.code)
+    if (response.code) {
       printf("Error. Request failed (code %d)", response.code);
+    }
     return false;
-  }
-  else return true
+  } else return true
 }
 
+
+/**
+ * Handles get/post response data, returns proper format
+ * @param  {DataType} type
+ * @param  {String}   responseText
+ */
 function handleResponse(type, responseText) { /*  handles get/post response data, returns proper format */
-  if (debugMode)
+  if (debugMode) {
     print('handleResponse', 'raw_response: ' + responseText);
+  }
 
   if (type === DataType.XML) {
     responseText = boxeeAPI.xmlToJson(responseText)
     responseText = eval('(' + responseText + ')');
+  } else if (type === DataType.JSON) {
+    responseText = eval('(' + responseText + ')');
   }
-  else if (type === DataType.JSON) responseText = eval('(' + responseText + ')');
 
   return responseText;
 }
 
-/* Performs a simple get request, onComplete2 is passed through onComplete */
+
+/**
+ * Performs a simple get request, onComplete2 is passed through onComplete
+ * @param  {String}   url
+ * @param  {DataType} type
+ * @param  {Function} onComplete
+ * @param  {Function} onComplete2
+ * @return {Boolean}
+ */
 function getData(url, type, onComplete, onComplete2) {
   if (debugMode)
     printf("url=%s", url);
@@ -828,7 +1066,16 @@ function getData(url, type, onComplete, onComplete2) {
   request.send();
 }
 
-/*  performs a simple post request, onComplete2 is passed through onComplete */
+
+/**
+ * Performs a simple post request, onComplete2 is passed through onComplete
+ * @param  {String}   url
+ * @param  {Object}   data
+ * @param  {DataType} type
+ * @param  {Function} onComplete
+ * @param  {Function} onComplete2
+ * @return {Boolean}
+ */
 function getPost(url, data, type, onComplete, onComplete2) {
   if (debugMode)
     printf("url=%s", url);
@@ -856,58 +1103,59 @@ function getPost(url, data, type, onComplete, onComplete2) {
   request.send(JSON.stringify(data));
 }
 
-/*  Manages pandora requests, uses the handler to keep track of the
-        calling function, its arguments and its spcific callback. allows
-        for this function to handle failed requests like invalid auth token */
+
+/**
+ * Manages pandora requests, uses the handler to keep track of the calling
+ * function, its arguments and its spcific callback. allows for this function
+ * to handle failed requests like invalid auth token
+ * @param  {Number} code      Response code
+ * @param  {Object} response  Pandora response object
+ * @param  {Object} handler   Request handler object
+ */
 function handle_pandoraResponse(code, response, handler) {
   if (isResponseOk(response)) {
-    if (debugMode)
-      print('response is OK');
+    printd('response is OK');
     Global.retryCount = 3;
     handler.target((new PandoraResult(-1, response)), handler.callback, handler.args);
-  }
-  else if (response.code === 1001 && !handler.blocker) {
+
+  } else if (response.code === 1001 && !handler.blocker) {
     Global.retryCount--;
     printWindowProperties();
-
     if (Global.retryCount > 0) {
       printf('Error. Invalid auth token, refreshing... (retries left: %d)', Global.retryCount);
       userLogin(sendWithArgs(handler.parent, handler.args, handler.callback), true);
-    }
-    else {
+    } else {
       Global.retryCount = 3;
       uiOkDialog('Too many attempts to refresh your account. Can no longer communicate with Pandora. Please log in again or contact Pandora support for additional help.', uiFailedPlayback);
     }
-  }
-  else if (response.code === 9000 && !handler.blocker) {
+
+  } else if (response.code === 9000 && !handler.blocker) {
     Global.retryCount--;
     printWindowProperties();
 
     if (Global.retryCount > 0) {
       printf('Error. Network is down, retrying... (retries left: %d)', Global.retryCount);
       handler.parent(handler.args, handler.callback);
-    }
-    else {
+    } else {
       Global.retryCount = 3;
       uiHideWait();
       uiOkDialog(getErrorReponse(9000), uiFailedPlayback);
     }
-  }
-  else if (response.code === 0 && !handler.blocker) {
+
+  } else if (response.code === 0 && !handler.blocker) {
     Global.retryCount--;
     printWindowProperties();
 
     if (Global.retryCount > 0) {
       printf('Error. Internal Server Error, retrying... (retries left: %d)', Global.retryCount);
       handler.parent(handler.args, handler.callback);
-    }
-    else {
+    } else {
       Global.retryCount = 3;
       uiHideWait();
       uiOkDialog(getErrorReponse(0), uiFailedPlayback);
     }
-  }
-  else {
+
+  } else {
     handler.target((new PandoraResult(response.code, response)), handler.callback, handler.args);
   }
 }
@@ -974,8 +1222,7 @@ function getAuthToken(callback) {
 function handle_getAuthToken(request, callback) {
   if (request.isOk) {
     callback(request);
-  }
-  else {
+  } else {
     print('Error. was unable to get a valid device authorization token.');
     Global.status = PandoraStatus.OFFLINE;
     callback(request);
@@ -1017,8 +1264,7 @@ function handle_userLogin(request, callback) {
     if (Global.status !== PandoraStatus.PLAYING) Global.status = PandoraStatus.LOGGEDIN;
     if (debugMode) print('login was successful. this device is associated to your pandora account.');
     if (isFunction(callback)) callback(request);
-  }
-  else {
+  } else {
     printf("ERROR %d, %s", request.code, request.description);
     if (isFunction(callback)) callback(request)
   }
@@ -1037,8 +1283,7 @@ function associateDevice(callback) {
         handle_associateDevice,
         callback
       );
-  }
-  else {
+  } else {
     print('userAuthToken/deviceId missing or invalid.')
     if (isFunction(callback)) callback(false);
   }
@@ -1052,8 +1297,7 @@ function handle_associateDevice(code, response, callback) {
     Global.isAssociated = true;
     storeSetting('isAssociated', true);
     callback(new PandoraResult(-1, response))
-  }
-  else {
+  } else {
     var ecode = (response.code !== undefined) ? response.code.toString() : 'unknown';
     printf("Error. server returned error (%s)", ecode);
     Global.isAssociated = false;
@@ -1082,12 +1326,10 @@ function handle_disassociateDevice(request, callback) {
   if (request.isOk) {
     resetDevice();
     callback(true);
-  }
-  else if (request.code === 1000) {
+  } else if (request.code === 1000) {
     uiOkDialog(request.description, sendWithArgs(callback, false))
     printf("ERROR %d, %s", request.code, request.description);
-  }
-  else {
+  } else {
     printf("ERROR %d, %s", request.code, request.description);
     callback(false);
   }
@@ -1117,10 +1359,8 @@ function handle_getStationList(request, callback) {
       var stationStatus = uiPopulateStations();
       if (isFunction(callback)) callback(stationStatus);
       return stationStatus;
-    }
-    else return false;
-  }
-  else {
+    } else return false;
+  } else {
     printf("ERROR %d, %s", request.code, request.description);
     uiOkDialog(request.description, (function() {
       forceFocus(buttonInfo)
@@ -1173,8 +1413,7 @@ function handle_getPlaylist(request, callback) {
           "item": items[i]
         }
         Global.pendingTracks.unshift(track)
-      }
-      else if (items[i].adToken !== undefined) {
+      } else if (items[i].adToken !== undefined) {
         print("Adding AD to play queue");
         var ad = {
           "isAd": true,
@@ -1185,14 +1424,12 @@ function handle_getPlaylist(request, callback) {
     }
 
     if (isFunction(callback)) callback(true);
-  }
-  else if (request.code === 1006) {
+  } else if (request.code === 1006) {
     /*  current station no longer exists, we should refresh station list
         alert user and set new random station */
     uiOkDialog(request.description, refreshAndPlayRandom);
     return false;
-  }
-  else {
+  } else {
     printf("Error %d, %s", request.code, request.description);
     if (isFunction(callback)) callback(false);
   }
@@ -1232,8 +1469,7 @@ function handle_explainTrack(request) {
     Global.processingExplainTrack = false;
     print('CANCELED: user canceled the operation');
     return false;
-  }
-  else if (request.isOk) {
+  } else if (request.isOk) {
     var reasons = [];
     var explanations = request.response.explanations;
     explanations.pop();
@@ -1246,8 +1482,7 @@ function handle_explainTrack(request) {
     uiHideWait();
     explainBlade.showWhyPanel(reason);
     Global.processingExplainTrack = false;
-  }
-  else {
+  } else {
     Global.processingExplainTrack = false;
     printf("ERROR %d, %s", request.code, request.description);
     uiOkDialog(request.description, (function() {
@@ -1320,14 +1555,12 @@ function handle_searchPandora(request, callback) {
     uiHideWait();
     forceFocus(keyboard)
     callback(result);
-  }
-  else if (request.code === 1000) {
+  } else if (request.code === 1000) {
     uiHideWait();
     forceFocus(keyboard)
     uiOkDialog(request.description, sendWithArgs(callback, []));
     printf("ERROR %d, %s", request.code, request.description);
-  }
-  else {
+  } else {
     uiHideWait();
     callback([]);
     forceFocus(keyboard)
@@ -1372,8 +1605,7 @@ function handle_autoComplete(code, response, callback) {
       }
     }
     callback(result);
-  }
-  catch (e) {
+  } catch (e) {
     printError(e);
     callback();
   }
@@ -1452,12 +1684,10 @@ function handle_createStation(request, callback) {
     getStationList();
     callback(request.response.stationToken);
     return true;
-  }
-  else if (request.code === 1000 || request.code === 1005) {
+  } else if (request.code === 1000 || request.code === 1005) {
     uiOkDialog(request.description, sendWithArgs(callback, false));
     printf("ERROR %d, %s", request.code, request.description);
-  }
-  else {
+  } else {
     uiOkDialog(request.description, sendWithArgs(callback, false));
     printf("ERROR %d, %s", request.code, request.description);
   }
@@ -1491,12 +1721,10 @@ function handle_renameStation(request, callback) {
     }
     setStationProperty(request.response.stationToken, 'stationName', request.response.stationName);
     callback(request.response);
-  }
-  else if (request.code === 1000) {
+  } else if (request.code === 1000) {
     uiOkDialog(request.description, sendWithArgs(callback, false));
     printf("ERROR %d, %s", request.code, request.description);
-  }
-  else {
+  } else {
     printf("Error. server returned error (%d, %s)", request.code, request.description);
     callback(false);
   }
@@ -1545,12 +1773,10 @@ function handle_deleteStation(request, callback) {
     if (debugMode)
       print('successfully deleted station or station was already deleted from another location');
     getStationList(callback);
-  }
-  else if (request.code === 1000) {
+  } else if (request.code === 1000) {
     uiOkDialog(request.description, callback);
     printf("ERROR %d, %s", request.code, request.description);
-  }
-  else {
+  } else {
     printf("Error. server returned error (%d, %s)", request.code, request.description);
     uiOkDialog(request.description, callback);
   }
@@ -1605,18 +1831,15 @@ function handle_addFeedback(request, callback, songRating) {
       uiUpdateCurrentTrack(buttonPlayPause);
       clearPendingTracks();
       skipSong();
-    }
-    else uiUpdateCurrentTrack(buttonThumbDown);
+    } else uiUpdateCurrentTrack(buttonThumbDown);
 
     if (debugMode)
       print('feedback submitted successfully.');
-  }
-  else if (request.code === 1000) {
+  } else if (request.code === 1000) {
     forceFocus(failedFocus);
     uiOkDialog(request.description); //, (function(){ forceFocus(failedFocus); }));
     printf("ERROR %d, %s", request.code, request.description);
-  }
-  else {
+  } else {
     forceFocus(failedFocus);
     uiOkDialog('There was a problem submitting feedback for this track. Please try again later.'); //, (function(){ forceFocus(failedFocus); }));
     printf("ERROR %d, %s", request.code, request.description);
@@ -1646,12 +1869,10 @@ function handle_addBookmark(request, callback) {
     if (debugMode)
       print('bookmark created successfully');
     uiOkDialog('Successfully bookmarked! Check out your bookmarks at www.pandora.com/profile/bookmarks/', callback);
-  }
-  else if (request.code === 1000) {
+  } else if (request.code === 1000) {
     uiOkDialog(request.description, callback)
     printf("ERROR %d, %s", request.code, request.description);
-  }
-  else {
+  } else {
     uiOkDialog('Error creating bookmark.', callback);
     printf("ERROR %d, %s", request.code, request.description);
   }
@@ -1683,8 +1904,7 @@ function handle_getAdMetadata(request, callback) {
   if (request.isOk) {
     request.response.isAd = true;
     callback(createTrack(request.response));
-  }
-  else {
+  } else {
     printf("Error. server returned error (%d, %s)", request.code, request.description);
     callback(request.response);
   }
@@ -1720,8 +1940,7 @@ function createTrack(item) {
     track.trackToken = item.trackToken;
     track.allowFeedback = item.allowFeedback;
     track.songRating = item.songRating;
-  }
-  else if (item.isAd !== undefined && item.isAd) {
+  } else if (item.isAd !== undefined && item.isAd) {
     track.isAd = true;
     track.adToken = (item.adToken || '');
     track.thumbnail = (item.imageUrl || '');
@@ -1729,8 +1948,7 @@ function createTrack(item) {
     track.path = (item.audioUrl || '');
     track.company = (item.companyName || '');
     track.songRating = 0;
-  }
-  else {
+  } else {
     print("Unrecognized track type!");
     return null;
   }
@@ -1749,8 +1967,7 @@ function handle_refreshAndPlayRandom(response) {
   if (response) {
     setRandomStation();
     playNextTrack();
-  }
-  else uiFailedPlayback();
+  } else uiFailedPlayback();
 }
 
 /*  returns the next track in the list of pending tracks */
@@ -1765,8 +1982,7 @@ function getNextTrack() {
   if (track.isAd !== undefined || track.isTrack !== undefined) {
     track.isShared = Global.currentStation.isShared
     return track;
-  }
-  else {
+  } else {
     print("Error. Unrecognized track type");
     return null;
   }
@@ -1799,8 +2015,7 @@ function addSkippedTrack(trackToken) {
     }
 
     return false;
-  }
-  catch (e) {
+  } catch (e) {
     printError(e);
     return false;
   }
@@ -1816,8 +2031,7 @@ function hasStations() {
     station = Global.stationList[0]
     if (station["isQuickMix"] === true) return false
     else return true
-  }
-  else
+  } else
     return false;
 }
 
@@ -1852,8 +2066,7 @@ function setStationFromToken(stationToken) {
 
     printf('no station with token (%s) exists', stationToken);
     return false;
-  }
-  catch (e) {
+  } catch (e) {
     printError(e);
     return false;
   }
@@ -2059,12 +2272,10 @@ function startPlayback(result) {
   if (Global.status === PandoraStatus.PLAYING) {
     print('pandora already playing');
     return true;
-  }
-  else if (Global.status === PandoraStatus.LOGGEDOUT || Global.status === PandoraStatus.OFFLINE) {
+  } else if (Global.status === PandoraStatus.LOGGEDOUT || Global.status === PandoraStatus.OFFLINE) {
     print('pandora offline or not loggedin');
     return false;
-  }
-  else if (Global.status === PandoraStatus.UNKNOWN) {
+  } else if (Global.status === PandoraStatus.UNKNOWN) {
     print('Error. pandora status is unknown');
     return false
   }
@@ -2092,8 +2303,7 @@ function getSkipList() {
 
     printfd('token=%s, item=%d', token, Global.skippedTracks[token].length);
     return Global.skippedTracks[token];
-  }
-  catch (e) {
+  } catch (e) {
     printError(e);
     return false;
   }
@@ -2109,13 +2319,11 @@ function getPlayedTracks() {
         Global.playedTracks[token] = [];
       printfd('token=%s, items=%d', token, Global.playedTracks[token].length);
       return Global.playedTracks[token];
-    }
-    else {
+    } else {
       print('Error. Unable to get played track list. Current station token does not exist.');
       return false;
     }
-  }
-  catch (e) {
+  } catch (e) {
     printError(e);
     return false;
   }
@@ -2133,8 +2341,7 @@ function modifySongRating(songRating) {
 
     // we store the played tracks list everytime the list is modified
     storePlayedTracks();
-  }
-  catch (e) {
+  } catch (e) {
     printError(e);
     return false;
   }
@@ -2188,8 +2395,7 @@ function changeCurrentStation(token) {
     stationLabel.text = Global.currentStation.stationName;
     getPlaylist(playNextTrack);
     return true;
-  }
-  else {
+  } else {
     printf('Error. cannot change stations. was unable to set station by token (%s)', token);
     return false;
   }
