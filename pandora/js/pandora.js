@@ -56,7 +56,7 @@ function checkActivityTimeout() {
 
 /**
  * Checks if boxee device currently has an active network connection
- * @return {Boolean} True if Boxee TV has no connection
+ * @return {boolean} True if Boxee TV has no connection
  */
 function isOffline() {
   return (boxeeAPI.hasInternetConnection !== undefined && !boxeeAPI.hasInternetConnection());
@@ -83,13 +83,13 @@ function isFunction(f) {
 
 
 /**
- * Wraps supplied argument in function, used when we need to execute function from callback and pass arguments
- * @param  {Function} Callback
- * @return {Object} Anything here really
+ * Wraps supplied argument in function, used when we need to execute function from cb and pass arguments
+ * @param  {function} Callback
+ * @return {object} Anything here really
  * @example
  * function test(string) { console.log(string) }
- * callback(sendWithArgs(test, "hello"));
- * // test() will be executed within callback
+ * cb(sendWithArgs(test, "hello"));
+ * // test() will be executed within cb
  */
 function sendWithArgs() {
   var args = Array.prototype.slice.apply(arguments);
@@ -277,12 +277,12 @@ function getErrorReponse(code) {
 
 /**
  * Shows the wait dialog
- * @param  {Function} callback
+ * @param  {function} cb
  */
-function uiShowWait(callback) {
+function uiShowWait(cb) {
   if (!loading) {
     loading = true;
-    boxeeAPI.showWaitDialog(isFunction(callback), callback);
+    boxeeAPI.showWaitDialog(isFunction(cb), cb);
   }
 }
 
@@ -298,56 +298,56 @@ function uiHideWait() {
 
 /**
  * Show Keyboard Dialog
- * @param  {String}   message   Dialog message text
- * @param  {String}   initval   Inital keyboard text
- * @param  {Function} callback
- * @param  {Function} callback2
+ * @param  {string}   message   Dialog message text
+ * @param  {string}   initval   Inital keyboard text
+ * @param  {function} cb
+ * @param  {function} cb2
  */
-function uiKeyboardDialog(message, initval, callback, callback2) {
+function uiKeyboardDialog(message, initval, cb, cb2) {
   printf('showing keyboard dialog from (%s)', arguments.callee.caller.name);
   var splash = boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg';
-  boxeeAPI.showKeyboardDialog('Pandora', callback, false, initval, message, true, callback2, splash)
+  boxeeAPI.showKeyboardDialog('Pandora', cb, false, initval, message, true, cb2, splash)
 }
 
 
 /**
  * Show Ok Dialog
- * @param  {String}   message   Dialog message text
- * @param  {Function} callback
- * @param  {Function} callback2
+ * @param  {string}   message   Dialog message text
+ * @param  {function} cb
+ * @param  {function} cb2
  */
-function uiOkDialog(message, callback, callback2) {
-  if (!isFunction(callback2)) {
-    callback2 = callback;
+function uiOkDialog(message, cb, cb2) {
+  if (!isFunction(cb2)) {
+    cb2 = cb;
   }
   printf('showing ok dialog from (%s)', arguments.callee.caller.name);
-  boxeeAPI.showOkDialog('Pandora', message, callback, callback2, 'OK', true, boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg');
+  boxeeAPI.showOkDialog('Pandora', message, cb, cb2, 'OK', true, boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg');
 }
 
 
 /**
  * [uiConfirmDialog description]
- * @param  {String}   title     Dialog title
- * @param  {String}   message   Dialog message text
- * @param  {Function} callback
- * @param  {Function} callback2
- * @param  {String}   cancel    Cancel button text
- * @param  {String}   ok        Confirm button text
+ * @param  {string}   title     Dialog title
+ * @param  {string}   message   Dialog message text
+ * @param  {function} cb
+ * @param  {function} cb2
+ * @param  {string}   cancel    Cancel button text
+ * @param  {string}   ok        Confirm button text
  */
-function uiConfirmDialog(title, message, callback, callback2, cancel, ok) {
+function uiConfirmDialog(title, message, cb, cb2, cancel, ok) {
   printf('showing confirm dialog from (%s)', arguments.callee.caller.name);
 
-  var title   = title || 'Pandora',
-      ok      = ok || 'OK',
-      cancel  = cancel || 'Cancel',
-      bg      = boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg';
-  boxeeAPI.showConfirmDialog(title, message, callback, callback2, ok, cancel, true, bg)
+  var title = title || 'Pandora',
+    ok = ok || 'OK',
+    cancel = cancel || 'Cancel',
+    bg = boxeeAPI.runningAppPath() + '/media/pandora_splash_bokeh_dim.jpg';
+  boxeeAPI.showConfirmDialog(title, message, cb, cb2, ok, cancel, true, bg)
 }
 
 
 /**
  * Handles failures, stops player, resets ui, notifies user.
- * @param  {Number} code Error code
+ * @param  {number} code Error code
  */
 function uiFailedPlayback(code) {
   print('failed playback called.');
@@ -417,7 +417,7 @@ function uiSaveFocus() {
 
 /**
  * Shows requires activation screen
- * @param  {Boolean} appStart [description]
+ * @param  {boolean} appStart [description]
  */
 function uiShowActivatePandora(appStart) {
   print('this device is not associated with any pandora account.');
@@ -466,7 +466,7 @@ function uiShowPandora(appStart) {
 
 /**
  * Starts playback or shows the search blade to create a station
- * @param  {Boolean} result False will show search blade, true will start playback
+ * @param  {boolean} result False will show search blade, true will start playback
  */
 function uiNoStationsAtLaunch(result) {
   if (result) {
@@ -601,9 +601,9 @@ function uiPopulateStations() {
 
 /**
  * Store setting to boxee client
- * @param  {String} key       Settings key
- * @param  {String} value     Setting value
- * @param  {Boolean} dontSave Save unsaved settings
+ * @param  {string}   key       Settings key
+ * @param  {string}   value     Setting value
+ * @param  {boolean}  dontSave  Save unsaved settings
  */
 function storeSetting(key, value, dontSave) {
   boxeeAPI.setAppSetting(key, value);
@@ -616,7 +616,6 @@ function storeSetting(key, value, dontSave) {
 /**
  * Load setting from boxee client
  * @param  {string} key setting key
- * @return {String}     matching setting
  */
 function loadSetting(key) {
   return boxeeAPI.appSetting(key);
@@ -641,7 +640,6 @@ function resetSettings() {
 
 /**
  * Store skipped tracks to app storage
- * @return {[type]} [description]
  */
 function storeSkippedTracks() {
   storeSetting('skippedTracks', Global.skippedTracks);
@@ -744,7 +742,7 @@ function resetDevice() {
 
 /**
  * Stops media playback
- * @return {Boolean} returns false on error
+ * @return {boolean} returns false on error
  */
 function playerStop() {
   try {
@@ -760,7 +758,7 @@ function playerStop() {
 
 /**
  * Pauses media playback
- * @return {Boolean} returns false on error
+ * @return {boolean} returns false on error
  */
 function playerPause() {
   try {
@@ -857,7 +855,7 @@ function onMediaStatusChanged() {
   if (boxeeAPI.mediaPlayer().mediaStatus() === boxeeAPI.mediaStatusEndOfMedia) {
     var canPlaybackContinue = checkActivityTimeout();
     if (canPlaybackContinue && (!mediaOpen || !isPlaying)) {
-        playNextTrack();
+      playNextTrack();
     } else {
       uiOkDialog('Are you still there?', onAreYouStillThere);
     }
@@ -868,7 +866,7 @@ function onMediaStatusChanged() {
 /**
  * Play a track
  * @param  {MediaItem} track Track to play
- * @return {Boolean}         Returns true on successful playback
+ * @return {boolean} Returns true on successful playback
  */
 function play(track) {
   try {
@@ -936,8 +934,8 @@ function play(track) {
 
 /**
  * Validates a server response
- * @param  {Object}  response Response Object
- * @return {Boolean}          True on valid response
+ * @param  {object}  response Response Object
+ * @return {boolean}          True on valid response
  */
 function isResponseOk(response) {
   if (response === undefined || !response) {
@@ -964,7 +962,7 @@ function isResponseOk(response) {
 /**
  * Handles get/post response data, returns proper format
  * @param  {DataType} type
- * @param  {String}   responseText
+ * @param  {string}   responseText
  */
 function handleResponse(type, responseText) { /*  handles get/post response data, returns proper format */
   print('handleResponse', 'raw_response: ' + responseText);
@@ -982,11 +980,10 @@ function handleResponse(type, responseText) { /*  handles get/post response data
 
 /**
  * Performs a simple get request, onComplete2 is passed through onComplete
- * @param  {String}   url
- * @param  {DataType} type
- * @param  {Function} onComplete
- * @param  {Function} onComplete2
- * @return {Boolean}
+ * @param  {string}   url         url to get
+ * @param  {DataType} type        data type; see DataType
+ * @param  {function} onComplete  callback on completion
+ * @param  {function} onComplete2 if specified, sent as parameter in first callback
  */
 function getData(url, type, onComplete, onComplete2) {
   printf("url=%s", url);
@@ -1016,12 +1013,11 @@ function getData(url, type, onComplete, onComplete2) {
 
 /**
  * Performs a simple post request, onComplete2 is passed through onComplete
- * @param  {String}   url
- * @param  {Object}   data
- * @param  {DataType} type
- * @param  {Function} onComplete
- * @param  {Function} onComplete2
- * @return {Boolean}
+ * @param  {string}   url         url to post
+ * @param  {object}   data        data to send
+ * @param  {DataType} type        data type; see DataType
+ * @param  {function} onComplete  callback on completion
+ * @param  {function} onComplete2 if specified, sent as parameter in first callback
  */
 function getPost(url, data, type, onComplete, onComplete2) {
   printf("url=%s", url);
@@ -1052,30 +1048,29 @@ function getPost(url, data, type, onComplete, onComplete2) {
 
 /**
  * Manages pandora requests, uses the handler to keep track of the calling
- * function, its arguments and its spcific callback. allows for this function
+ * function, its arguments and its spcific cb. allows for this function
  * to handle failed requests like invalid auth token
- * @param  {Number} code      Response code
- * @param  {Object} response  Pandora response object
- * @param  {Object} handler   Request handler object
- *
  * Handler Object
  *    parent: parent (calling) method,
  *    args: argument passed to parent method,
  *    target: target handler function,
- *    callback: callback function to be passed to the target
+ *    cb: cb function to be passed to the target
+ * @param  {number} code      Response code
+ * @param  {object} response  Pandora response object
+ * @param  {object} handler   Request handler object
  */
 function handle_pandoraResponse(code, response, handler) {
   if (isResponseOk(response)) {
     print('response is OK');
     Global.retryCount = 3;
-    handler.target((new PandoraResult(-1, response)), handler.callback, handler.args);
+    handler.target((new PandoraResult(-1, response)), handler.cb, handler.args);
 
   } else if (response.code === 1001 && !handler.blocker) {
     Global.retryCount--;
     printWindowProperties();
     if (Global.retryCount > 0) {
       printf('Error. Invalid auth token, refreshing... (retries left: %d)', Global.retryCount);
-      userLogin(sendWithArgs(handler.parent, handler.args, handler.callback), true);
+      userLogin(sendWithArgs(handler.parent, handler.args, handler.cb), true);
     } else {
       Global.retryCount = 3;
       uiOkDialog('Too many attempts to refresh your account. Can no longer communicate with Pandora. Please log in again or contact Pandora support for additional help.', uiFailedPlayback);
@@ -1087,7 +1082,7 @@ function handle_pandoraResponse(code, response, handler) {
 
     if (Global.retryCount > 0) {
       printf('Error. Network is down, retrying... (retries left: %d)', Global.retryCount);
-      handler.parent(handler.args, handler.callback);
+      handler.parent(handler.args, handler.cb);
     } else {
       Global.retryCount = 3;
       uiHideWait();
@@ -1100,7 +1095,7 @@ function handle_pandoraResponse(code, response, handler) {
 
     if (Global.retryCount > 0) {
       printf('Error. Internal Server Error, retrying... (retries left: %d)', Global.retryCount);
-      handler.parent(handler.args, handler.callback);
+      handler.parent(handler.args, handler.cb);
     } else {
       Global.retryCount = 3;
       uiHideWait();
@@ -1108,25 +1103,21 @@ function handle_pandoraResponse(code, response, handler) {
     }
 
   } else {
-    handler.target((new PandoraResult(response.code, response)), handler.callback, handler.args);
+    handler.target((new PandoraResult(response.code, response)), handler.cb, handler.args);
   }
 }
 
 
-/*  helper function for making pandora api calls. this specific
-        function does NOT use handle_pandoraResponse. the callback
-        function must manager failures and errors on its own. */
-
 /**
  * Makes API requests to the pandora server. This specific function does NOT
- * use handle_pandoraResponse. the callback function must manager failures and
+ * use handle_pandoraResponse. the cb function must manager failures and
  * errors on its own.
- * @param  {String}   _method
- * @param  {Object}   _data
- * @param  {Function} callback
- * @param  {Function} callback2
+ * @param  {string}   _method Pandora API method
+ * @param  {object}   _data   Data to send in request
+ * @param  {function} cb      Callback
+ * @param  {function} cb2     If specified, sent as parameter in first callback
  */
-function callServer(_method, _data, callback, callback2) {
+function callServer(_method, _data, cb, cb2) {
   var method = "/apps/pandora2/?method=" + _method;
   if (Global.userAuthToken !== undefined && Global.userAuthToken !== null) {
     method = method + "&auth_token=" + encodeURIComponent(Global.userAuthToken);
@@ -1139,17 +1130,16 @@ function callServer(_method, _data, callback, callback2) {
     uiShowWait();
   }
 
-  getPost(Global.host + method, _data, DataType.JSON, callback, callback2);
+  getPost(Global.host + method, _data, DataType.JSON, cb, cb2);
 }
 
 
 /**
  * Makes API requests to the pandora server. Sends request responsed to
  * handle_pandoraResponse() to be managed. this method is preferred.
- * @param  {[type]} _method [description]
- * @param  {[type]} _data   [description]
- * @param  {[type]} handler [description]
- * @return {[type]}         [description]
+ * @param  {string}   _method Pandora API method
+ * @param  {object}   _data Data to send in request
+ * @param  {handler}  handler ©Result handler
  */
 function callServer2(_method, _data, handler) {
   var method = "/apps/pandora2/?method=" + _method;
@@ -1167,63 +1157,71 @@ function callServer2(_method, _data, handler) {
 
 
 /**
- * Requests auth token from pandora api
- * @param  {Function} callback
- *
- * @description
- * device.generateDeviceActivationCode - used for creating an account on the
- * web site (e.g. http://www.pandora.com/<partner>) and will link to the
- * deviceId to the new account. After the user has created the Pandora account,
- * the device can login using the deviceId
+ * Requests auth token from pandora api. [device.generateDeviceActivationCode]
+ * used for creating an account on the web site (e.g. http://www.pandora.com/<partner>)
+ * and will link to the deviceId to the new account. After the user has created
+ * the Pandora account, the device can login using the deviceId
+ * @param   {function} cb Callback function
  */
-function getAuthToken(callback) {
+function getAuthToken(cb) {
   print('requesting device link token...');
-
   var data = {
     "deviceId": Global.deviceId
   };
-
   var handler = {
     parent: getAuthToken,
     target: handle_getAuthToken,
-    callback: callback
+    cb: cb
   };
-
   callServer2("device.generateDeviceActivationCode", data, handler);
 }
 
 
-/*  device.generateDeviceActivationCode
-        handles the returned result from generateDeviceActivationCode request */
-function handle_getAuthToken(request, callback) {
+/**
+ * Handles the returned result from device.generateDeviceActivationCode API request
+ * @param  {object}   request Returned request object
+ * @param  {function} cb Callback function
+ */
+function handle_getAuthToken(request, cb) {
   if (request.isOk) {
-    callback(request);
+    cb(request);
   } else {
     print('Error. was unable to get a valid device authorization token.');
     Global.status = PandoraStatus.OFFLINE;
-    callback(request);
+    cb(request);
   }
 }
+
 
 /*  auth.userLogin
         authenticates the user/device for further access to the pandora system,
         after the calling application has itself been authenticated */
-function userLogin(callback, blocker) {
+/**
+ * Authenticates the user/device to the pandora service. [auth.userLogin]
+ * @param  {function} cb [description]
+ * @param  {boolean}  blocker  [description]
+ */
+function userLogin(cb, blocker) {
   printf('logging in via deviceId (%s)', Global.deviceId);
-  callServer2("auth.userLogin", {
-    'deviceId': Global.deviceId
-  }, {
+  var data = {
+    "deviceId": Global.deviceId
+  };
+  var handler = {
     parent: userLogin,
     target: handle_userLogin,
     blocker: blocker,
-    callback: callback
-  });
-
+    cb: cb
+  };
+  callServer2("auth.userLogin", data, handler);
 }
 
-/*  auth.userLogin
-        handles the returned result from userLogin request */
-function handle_userLogin(request, callback) {
+
+/**
+ * Handles the returned result from userLogin request
+ * @param  {object}   request  Request object returned from pandora servers
+ * @param  {function} cb
+ */
+function handle_userLogin(request, cb) {
   if (request.isOk) {
     Global.username = request.response.username;
     Global.userAuthToken = request.response.userAuthToken;
@@ -1235,20 +1233,33 @@ function handle_userLogin(request, callback) {
     Global.maxStationsAllowed = request.response.maxStationsAllowed;
     Global.canListen = request.response.canListen;
 
-    if (request.response.stations !== undefined) Global.stationList = request.response.stations;
-    else if (Global.stationList.length === 0) print('no stations returned with login and no stations previously loaded');
-    if (Global.status !== PandoraStatus.PLAYING) Global.status = PandoraStatus.LOGGEDIN;
+    if (request.response.stations !== undefined) {
+      Global.stationList = request.response.stations;
+    } else if (Global.stationList.length === 0) {
+      print('no stations returned with login and no stations previously loaded');
+    }
+
+    if (Global.status !== PandoraStatus.PLAYING) {
+      Global.status = PandoraStatus.LOGGEDIN;
+    }
+
     print('login was successful. this device is associated to your pandora account.');
-    if (isFunction(callback)) callback(request);
+    if (isFunction(cb)) {
+      cb(request);
+    }
   } else {
     printf("ERROR %d, %s", request.code, request.description);
-    if (isFunction(callback)) callback(request)
+    if (isFunction(cb)) {
+      cb(request)
+    }
   }
 }
 
-/*  user.associateDevice
-        creates a link between the user and a deviceId */
-function associateDevice(callback) {
+/**
+ * Creates a link between the user and a deviceId [user.associateDevice]
+ * @param  {function} cb Callback function
+ */
+function associateDevice(cb) {
   printf('attempting to link device via deviceId (%s)', Global.deviceId);
   if (Global.userAuthToken && Global.deviceId) {
     var data =
@@ -1257,125 +1268,171 @@ function associateDevice(callback) {
           "userAuthToken": Global.userAuthToken
         },
         handle_associateDevice,
-        callback
+        cb
       );
   } else {
     print('userAuthToken/deviceId missing or invalid.')
-    if (isFunction(callback)) callback(false);
+    if (isFunction(cb)) cb(false);
   }
 }
 
-/*  user.associateDevice
-        handles the returned result from associateDevice request */
-function handle_associateDevice(code, response, callback) {
+
+/**
+ * Handles the returned result from associateDevice request [user.associateDevice]
+ * @param  {number} code pandora response code
+ * @param  {object} response response object
+ * @param  {function} cb callback
+ */
+function handle_associateDevice(code, response, cb) {
   if (isResponseOk(response)) {
     print('device link successful.')
     Global.isAssociated = true;
     storeSetting('isAssociated', true);
-    callback(new PandoraResult(-1, response))
+    cb(new PandoraResult(-1, response))
   } else {
     var ecode = (response.code !== undefined) ? response.code.toString() : 'unknown';
     printf("Error. server returned error (%s)", ecode);
     Global.isAssociated = false;
     Global.status = PandoraStatus.OFFLINE;
     storeSetting('isAssociated', false);
-    callback(new PandoraResult(response.code, response))
+    cb(new PandoraResult(response.code, response))
   }
 }
 
-/*  device.disassociateDevice
-        removes the deviceId<->user association, resets the device */
-function disassociateDevice(callback) {
+
+/**
+ * Removes the deviceId<->user association, resets the device [device.disassociateDevice]
+ * @param  {function} cb callback
+ */
+function disassociateDevice(cb) {
   print('disassociating device');
-  callServer2("device.disassociateDevice", {
-    deviceId: Global.deviceId
-  }, {
+  var data = {
+    "deviceId": Global.deviceId
+  };
+  var handler = {
     target: handle_disassociateDevice,
     parent: disassociateDevice,
-    callback: callback
-  });
+    cb: cb
+  };
+  callServer2("device.disassociateDevice", data, handler);
 }
 
-/*  device.disassociateDevice
-        handles the returned result from disassociateDevice */
-function handle_disassociateDevice(request, callback) {
+
+/**
+ * Handles the returned result from disassociateDevice [device.disassociateDevice]
+ * @param  {objectg}  request Request objectg
+ * @param  {function} cb callback
+ */
+function handle_disassociateDevice(request, cb) {
   if (request.isOk) {
     resetDevice();
-    callback(true);
+    cb(true);
   } else if (request.code === 1000) {
-    uiOkDialog(request.description, sendWithArgs(callback, false))
+    uiOkDialog(request.description, sendWithArgs(cb, false))
     printf("ERROR %d, %s", request.code, request.description);
   } else {
     printf("ERROR %d, %s", request.code, request.description);
-    callback(false);
+    cb(false);
   }
 }
 
-/*  user.getStationList
-        retrieves the list of stations that this user has created and
-        the list of shared stations to which the user has listened */
-function getStationList(callback) {
+
+/**
+ * Retrieves the list of stations that this user has created and the list of
+ * shared stations to which the user has listened [user.getStationList]
+ * @param  {function} cb callback function
+ */
+function getStationList(cb) {
   print('refreshing user station list');
-  callServer2("user.getStationList", {
+  var data = {
     "userAuthToken": Global.userAuthToken
-  }, {
+  };
+  var handler = {
     parent: getStationList,
-    args: callback,
+    args: cb,
     target: handle_getStationList,
-    callback: callback
-  });
+    cb: cb
+  };
+  callServer2("user.getStationList", data, handler);
 }
 
-/*  user.getStationList
-        handles result returned from getStationList */
-function handle_getStationList(request, callback) {
+
+/**
+ * Handles result returned from getStationList [user.getStationList]
+ * @param  {object} request request object
+ * @param  {Function} cb callback function
+ * @return {boolean}
+ */
+function handle_getStationList(request, cb) {
   if (request.isOk) {
     if (request.response.stations !== undefined) {
       Global.stationList = request.response.stations;
       var stationStatus = uiPopulateStations();
-      if (isFunction(callback)) callback(stationStatus);
+      if (isFunction(cb)) {
+        cb(stationStatus);
+      }
       return stationStatus;
-    } else return false;
+    } else {
+      return false;
+    }
   } else {
     printf("ERROR %d, %s", request.code, request.description);
+
     uiOkDialog(request.description, (function() {
       forceFocus(buttonInfo)
     }));
-    if (isFunction(callback)) callback(false);
+
+    if (isFunction(cb)) {
+      cb(false);
+    }
+
     return false;
   }
 }
 
-/*  station.getPlaylist
-        retrieves up to a 4-song set of music, chosen from the Pandora library based on
-        the user’s music preferences, and could return zero or more audio ad tokens */
-function getPlaylist(callback) {
+
+/**
+ * retrieves up to a 4-song set of music, chosen from the Pandora library
+ * based on the user’s music preferences, and could return zero or more audio
+ * ad tokens [station.getPlaylist]
+ * @method getPlaylist
+ * @param {function} cb callback function
+ * @return {boolean}
+ */
+function getPlaylist(cb) {
   if (Global.status === PandoraStatus.OFFLINE) {
     print("pandora is offline, return (flow)");
     return false
-  }
-
-  if (Global.currentStation === null) {
+  } else if (Global.currentStation === null) {
     print("station is None, return (flow)");
     return false
   }
 
   print('Queue is empty, requesting new playlist.');
 
-  callServer2("station.getPlaylist", {
+  var data = {
     "stationToken": getCurrentStationToken(),
     "userAuthToken": Global.userAuthToken
-  }, {
+  };
+
+  var handler = {
     parent: getPlaylist,
-    args: callback,
+    args: cb,
     target: handle_getPlaylist,
-    callback: callback
-  });
+    cb: cb
+  };
+
+  callServer2("station.getPlaylist", data, handler);
 }
 
-/*  station.getPlaylist
-        handles result returned from getPlaylist */
-function handle_getPlaylist(request, callback) {
+
+/**
+ * Handles result returned from getPlaylist [station.getPlaylist]
+ * @param {object} request request object
+ * @param {function} cb callback function
+ * @returns {boolean} returns failure
+ */
+function handle_getPlaylist(request, cb) {
   if (request.isOk) {
     clearPendingTracks();
     Global.lostStationSetRandom = false;
@@ -1399,49 +1456,58 @@ function handle_getPlaylist(request, callback) {
       }
     }
 
-    if (isFunction(callback)) callback(true);
+    if (isFunction(cb)) cb(true);
   } else if (request.code === 1006) {
-    /*  current station no longer exists, we should refresh station list
-        alert user and set new random station */
+    // current station no longer exists, we should refresh station
+    // list alert user and set new random station
     uiOkDialog(request.description, refreshAndPlayRandom);
     return false;
   } else {
     printf("Error %d, %s", request.code, request.description);
-    if (isFunction(callback)) callback(false);
+    if (isFunction(cb)) cb(false);
   }
 }
 
-/*  track.explainTrack
-        This method retrieves information about which of the attributes are most
-        relevant for the current track when chosen for this particular station. */
+
+/**
+ * This method retrieves information about which of the attributes are most relevant
+ * for the current track when chosen for this particular station. [track.explainTrack]
+ */
 function explainTrack() {
   if (Global.currentTrack) {
     Global.processingExplainTrack = true;
     Global.cancelExplainTrackOperation = false;
     uiShowWait(cancel_explainTrack);
-    callServer2("track.explainTrack", {
+    var data = {
       trackToken: Global.currentTrack.trackToken
-    }, {
+    };
+    var handler = {
       parent: explainTrack,
-      target: handle_explainTrack,
-      args: undefined,
-      callback: undefined
-    });
+      target: handle_explainTrack
+    };
+    callServer2("track.explainTrack", data, handler);
   }
 }
 
-/*  track.explainTrack
-        handles the case where user may hit back to cancel the explain track request */
+
+/**
+ * Handles the case where user may hit back to cancel the explain
+ * track request [track.explainTrack]
+ */
 function cancel_explainTrack() {
   Global.cancelExplainTrackOperation = true;
   forceFocus(buttonInfo);
 }
 
-/*  track.explainTrack
-        handles the explain track request result */
+
+/**
+ * Handles the explain track request result [track.explainTrack]
+ * @param {object} request returned request object
+ * @returns {boolean} returns false on user cancel
+ */
 function handle_explainTrack(request) {
   if (Global.cancelExplainTrackOperation) {
-    //if user canceled, there is no need to continue
+    // if user canceled, there is no need to continue
     Global.processingExplainTrack = false;
     print('CANCELED: user canceled the operation');
     return false;
@@ -1449,12 +1515,14 @@ function handle_explainTrack(request) {
     var reasons = [];
     var explanations = request.response.explanations;
     explanations.pop();
-    for (var i = 0; i < explanations.length; i++)
+    for (var i = 0; i < explanations.length; i++) {
       reasons.push(explanations[i].focusTraitName);
+    }
     var lastReason = reasons.pop();
-    var reason = "<p>Why this track?<p/>Based on what you've told us so far, we're playing <font color='#FF9900'>%s</font> <font color='grey'>by</font> <font color='#FF9900'>%s</font> because it features ";
-    reason += reasons.join(", ");
-    reason += " and " + lastReason + ".";
+    var reason = "<p>Why this track?<p/>Based on what you've told us so far, " +
+      "we're playing <font color='#FF9900'>%s</font> <font color='grey'>by" +
+      "</font> <font color='#FF9900'>%s</font> because it features " +
+      reasons.join(", ") + " and " + lastReason + ".";
     uiHideWait();
     explainBlade.showWhyPanel(reason);
     Global.processingExplainTrack = false;
@@ -1467,9 +1535,13 @@ function handle_explainTrack(request) {
   }
 }
 
-/*  music.search
-        This method returns an array of items that match the users search term */
-function searchPandora(query, callback) {
+
+/**
+ * Returns an array of items that match the users search term [music.search]
+ * @param {string} query search query
+ * @param {function} cb callback function
+ */
+function searchPandora(query, cb) {
   if (query.trim()) {
     uiShowWait(cancel_searchPandora)
     var data = {
@@ -1477,25 +1549,32 @@ function searchPandora(query, callback) {
       includeNearMatches: true,
       searchText: query
     }
-    callServer2("music.search", data, {
+    var handler = {
       parent: searchPandora,
       args: query,
       target: handle_searchPandora,
-      callback: callback
-    });
+      cb: cb
+    };
+    callServer2("music.search", data, handler);
   }
 }
 
-/*  music.search
-        handles the case where user may hit back to cancel the search request */
+/**
+ * Handles the case where user may hit back to cancel the search request [music.search]
+ */
 function cancel_searchPandora() {
   Global.cancelSearch = true;
   forceFocus(keyboard);
 }
 
-/*  music.search
-        handles the music search request result */
-function handle_searchPandora(request, callback) {
+
+/**
+ * Handles music search request result [music.search]
+ * @param {object} request returned request object
+ * @param {function} cb callback function
+ * @return {[type]}
+ */
+function handle_searchPandora(request, cb) {
   if (Global.cancelSearch) {
     Global.cancelSearch = false;
     print('User canceled search request');
@@ -1530,40 +1609,51 @@ function handle_searchPandora(request, callback) {
 
     uiHideWait();
     forceFocus(keyboard)
-    callback(result);
+    cb(result);
   } else if (request.code === 1000) {
     uiHideWait();
     forceFocus(keyboard)
-    uiOkDialog(request.description, sendWithArgs(callback, []));
+    uiOkDialog(request.description, sendWithArgs(cb, []));
     printf("ERROR %d, %s", request.code, request.description);
   } else {
     uiHideWait();
-    callback([]);
+    cb([]);
     forceFocus(keyboard)
     printf("ERROR %d, %s", request.code, request.description);
   }
 }
 
-/*  pandora auto complete */
-function autoComplete(query, callback) {
+
+/**
+ * pandora auto complete
+ * @param {string} query search query
+ * @param {function} cb callback function
+ */
+function autoComplete(query, cb) {
   if (query.trim() === "") return false
 
   /*  Pandora certification 12.8 - Requests are made only after user
       is has been idle for 100 milliseconds */
-  var diff = (new Date()) - Global.lastAutoCompleteRequest;
-  if (diff < 100) return false;
+  var time = new Date();
+  if ((time - Global.lastAutoCompleteRequest) < 100) return false;
 
-  Global.lastAutoCompleteRequest = new Date();
+  Global.lastAutoCompleteRequest = time;
   var data = {
     auth_token: Global.userAuthToken,
     query: query
   }
   var autosearch = Global.autoComplete + "?" + data.serialize();
-  getData(autosearch, 0, handle_autoComplete, callback);
+  getData(autosearch, 0, handle_autoComplete, cb);
 }
 
-/*  handles the auto complete result */
-function handle_autoComplete(code, response, callback) {
+
+/**
+ * handles the auto complete result
+ * @param {number} code result code
+ * @param {object} response returned response object
+ * @param {function} cb callback function
+ */
+function handle_autoComplete(code, response, cb) {
   try {
     var result = [];
     var list = response.split("\n");
@@ -1580,16 +1670,22 @@ function handle_autoComplete(code, response, callback) {
         });
       }
     }
-    callback(result);
+    cb(result);
   } catch (e) {
     printError(e);
-    callback();
+    cb();
   }
 }
 
-/*  station.createStation (from track token / music type)
-        This method creates a new station based on a track’s artist or song (a trackToken). */
-function createStationFromTrackToken(_args, callback) {
+
+/**
+ * Creates a new station based on a track’s artist or song (a trackToken)
+ * [station.createStation] (from track token / music type)
+ * @param {object} _args data to be sent to pandora
+ * @param {function} cb callback function
+ * @returns {boolean} false on if PandoraStatus is offline
+ */
+function createStationFromTrackToken(_args, cb) {
   printf("create new station from track token (%s, %s)", _args.token, _args.type);
 
   if (Global.status === PandoraStatus.OFFLINE) {
@@ -1602,17 +1698,25 @@ function createStationFromTrackToken(_args, callback) {
     'musicType': _args.type
   };
 
-  callServer2("station.createStation", data, {
+  var handler = {
     parent: createStationFromTrackToken,
     target: handle_createStation,
     args: _args,
-    callback: callback
-  });
+    cb: cb
+  };
+
+  callServer2("station.createStation", data, handler);
 }
 
-/*  station.createStation (from music token)
-        This method creates a new station based on the results of a search (a musicToken) */
-function createStationFromToken(token, callback) {
+
+/**
+ * Creates a new station based on the results of a search (a musicToken)
+ * [station.createStation (from music token)]
+ * @param {string} token pandora music token
+ * @param {function} cb callback function
+ * @return {boolean} returns false on error
+ */
+function createStationFromToken(token, cb) {
   print(token);
 
   if (Global.status === PandoraStatus.OFFLINE) {
@@ -1626,66 +1730,85 @@ function createStationFromToken(token, callback) {
     return false;
   }
 
-  callServer2("station.createStation", {
+  var data = {
     'musicToken': token
-  }, {
+  };
+
+  var handler = {
     parent: createStationFromToken,
     target: handle_createStation,
     args: token,
-    callback: callback
-  });
+    cb: cb
+  };
+
+  callServer2("station.createStation", data, handler);
 }
 
-/*  station.createStation
-        handles the create station results */
-function handle_createStation(request, callback) {
+
+/**
+ * Handles the create station results [station.createStation]
+ * @param {object} request result request object
+ * @param {function} cb callback function
+ * @return {boolean} returns false if station already playing
+ */
+function handle_createStation(request, cb) {
   if (request.isOk) {
     //check if the station already playing
     if (getCurrentStationToken() === request.response.stationToken) {
       print('Error. cannot create station, same station already playing.');
-      callback('alreadyPlaying');
+      cb('alreadyPlaying');
       return false;
     }
-
     //check if the station with the same token already exists
     if (getStationByToken(request.response.stationToken)) {
       print('Error. cannot create station, station already exists.');
-      callback(request.response.stationToken);
+      cb(request.response.stationToken);
+      //return true so we can switch to and start playing the existing station
       return true;
     }
 
     Global.stationList.unshift(request.response);
     getStationList();
-    callback(request.response.stationToken);
+    cb(request.response.stationToken);
     return true;
   } else if (request.code === 1000 || request.code === 1005) {
-    uiOkDialog(request.description, sendWithArgs(callback, false));
+    uiOkDialog(request.description, sendWithArgs(cb, false));
     printf("ERROR %d, %s", request.code, request.description);
   } else {
-    uiOkDialog(request.description, sendWithArgs(callback, false));
+    uiOkDialog(request.description, sendWithArgs(cb, false));
     printf("ERROR %d, %s", request.code, request.description);
   }
 }
 
-/*  station.renameStation
-        changes the displayable name for this station. renaming a station will not affect playback. */
-function renameStation(_args, callback) {
+
+/**
+ * Changes the displayable name for this station. renaming a station will
+ * not affect playback. [station.renameStation]
+ * @param {object} _args data to send
+ * @param {function} cb callback function
+ */
+function renameStation(_args, cb) {
   var data = {
     stationToken: _args.token,
     stationName: _args.name,
     userAuthToken: Global.userAuthToken
   }
-  callServer2('station.renameStation', data, {
+  var hanler = {
     target: handle_renameStation,
     args: _args,
-    callback: callback,
+    cb: cb,
     parent: renameStation
-  });
+  };
+  callServer2('station.renameStation', data, handler);
 }
 
-/*  station.renameStation
-        handles the returned result from renameStation request */
-function handle_renameStation(request, callback) {
+
+/**
+ * Handles the returned result from renameStation request [station.renameStation]
+ * @param {object} request result request object
+ * @param {function} cb callback function
+ */
+function handle_renameStation(request, cb) {
   if (request.isOk) {
     printf('successfully renamed station (%s)', request.response.stationName);
     if (getCurrentStationToken() === request.response.stationToken) {
@@ -1694,23 +1817,27 @@ function handle_renameStation(request, callback) {
       Global.currentStation.stationName = request.response.stationName;
     }
     setStationProperty(request.response.stationToken, 'stationName', request.response.stationName);
-    callback(request.response);
+    cb(request.response);
   } else if (request.code === 1000) {
-    uiOkDialog(request.description, sendWithArgs(callback, false));
+    uiOkDialog(request.description, sendWithArgs(cb, false));
     printf("ERROR %d, %s", request.code, request.description);
   } else {
     printf("Error. server returned error (%d, %s)", request.code, request.description);
-    callback(false);
+    cb(false);
   }
 }
 
-/*  station.deleteStation
-        removes a station from the user's station list. */
-function deleteStation(token, callback) {
+
+/**
+ * Removes a station from the user's station list. station.deleteStation
+ * @param {sting} token station token
+ * @param {function} cb callback function
+ */
+function deleteStation(token, cb) {
   if (!getStationByToken(token)) {
     uiOkDialog('There was a problem deleting this station.');
     printf('unable to delete station, token is invalid (%s)', token)
-    if (isFunction(callback)) callback(false);
+    if (isFunction(cb)) cb(false);
     return false;
   }
 
@@ -1731,31 +1858,41 @@ function deleteStation(token, callback) {
     userAuthToken: Global.userAuthToken
   }
 
-  callServer2('station.deleteStation', data, {
+  var handler = {
     target: handle_deleteStation,
     args: token,
-    callback: callback,
+    cb: cb,
     parent: deleteStation
-  });
+  };
+
+  callServer2('station.deleteStation', data, handler);
 }
 
-/*  station.deleteStation
-        handles the returned result from deleteStation request */
-function handle_deleteStation(request, callback) {
+
+/**
+ * Handles the returned result from deleteStation request [station.deleteStation]
+ * @param {objedt} request result request object
+ * @param {function} cb callback fucntion
+ */
+function handle_deleteStation(request, cb) {
   if (request.isOk || request.code === 1006) {
     print('successfully deleted station or station was already deleted from another location');
-    getStationList(callback);
+    getStationList(cb);
   } else if (request.code === 1000) {
-    uiOkDialog(request.description, callback);
+    uiOkDialog(request.description, cb);
     printf("ERROR %d, %s", request.code, request.description);
   } else {
     printf("Error. server returned error (%d, %s)", request.code, request.description);
-    uiOkDialog(request.description, callback);
+    uiOkDialog(request.description, cb);
   }
 }
 
-/*  station.addFeedback
-        reports user's musical preferences for use in refining the current station. */
+
+/**
+ * Reports user's musical preferences for use in refining the current station. [station.addFeedback]
+ * @param {numbner} songRating [songRating=0] number
+ * @returns {boolean} returns false on error
+ */
 function addFeedback(songRating) {
   updateActivityTimestamp();
 
@@ -1779,18 +1916,24 @@ function addFeedback(songRating) {
     trackToken: Global.currentTrack.trackToken,
     userAuthToken: Global.userAuthToken
   }
-  callServer2('station.addFeedback', data, {
+
+  var handler = {
     parent: addFeedback,
     args: songRating,
-    target: handle_addFeedback,
-    callback: undefined
-  });
+    target: handle_addFeedback
+  };
 
+  callServer2('station.addFeedback', data, handler);
 }
 
-/*  station.addFeedback
-        handles the result from add feedback. we're getting the songRating back from the callServer2 handler */
-function handle_addFeedback(request, callback, songRating) {
+
+/**
+ * Handles the result from add feedback. we're getting the songRating back
+ * from the callServer2 handler [station.addFeedback]
+ * @param {object} request result request object
+ * @param {function} cb callback function
+ */
+function handle_addFeedback(request, cb, songRating) {
   if (typeof songRating === "string")
     songRating = parseInt(songRating);
 
@@ -1803,7 +1946,9 @@ function handle_addFeedback(request, callback, songRating) {
       uiUpdateCurrentTrack(buttonPlayPause);
       clearPendingTracks();
       skipSong();
-    } else uiUpdateCurrentTrack(buttonThumbDown);
+    } else {
+      uiUpdateCurrentTrack(buttonThumbDown);
+    }
 
     print('feedback submitted successfully.');
   } else if (request.code === 1000) {
@@ -1817,68 +1962,94 @@ function handle_addFeedback(request, callback, songRating) {
   }
 }
 
-/*  bookmark.addArtistBookmark / addSongBookmark
-        this method creates a bookmark for a particular artist or track */
-function addBookmark(_args, callback) {
+
+/**
+ * Creates a bookmark for a particular artist or track
+ * [bookmark.addArtistBookmark / addSongBookmark]
+ * @param {object} _args data to send
+ * @param {function} cb callback function
+ */
+function addBookmark(_args, cb) {
   var api = (_args.type === 'artist') ? 'addArtistBookmark' : 'addSongBookmark';
   var data = {
     trackToken: _args.token,
     userAuthToken: Global.userAuthToken
   }
-  callServer2('bookmark.' + api, data, {
+  var handler = {
     target: handle_addBookmark,
     args: _args,
-    callback: callback,
+    cb: cb,
     parent: addBookmark
-  });
+  }
+  callServer2('bookmark.' + api, data, handler);
 }
 
-/*  bookmark.addArtistBookmark / addSongBookmark
-        handles the returned result from addBookmark request */
-function handle_addBookmark(request, callback) {
+
+/**
+ * Hndles the returned result from addBookmark request
+ * [bookmark.addArtistBookmark / addSongBookmark]
+ * @param {object} request result request object
+ * @param {Function} cb callback function
+ */
+function handle_addBookmark(request, cb) {
   if (request.isOk) {
     print('bookmark created successfully');
-    uiOkDialog('Successfully bookmarked! Check out your bookmarks at www.pandora.com/profile/bookmarks/', callback);
+    uiOkDialog('Successfully bookmarked! Check out your bookmarks at www.pandora.com/profile/bookmarks/', cb);
   } else if (request.code === 1000) {
-    uiOkDialog(request.description, callback)
+    uiOkDialog(request.description, cb)
     printf("ERROR %d, %s", request.code, request.description);
   } else {
-    uiOkDialog('Error creating bookmark.', callback);
+    uiOkDialog('Error creating bookmark.', cb);
     printf("ERROR %d, %s", request.code, request.description);
   }
 }
 
-/*  ad.getAdMetadata
-        This method ia called at the time the audio ad is going to be played. If there is an
-        audio ad to be played, the audioUrl result will be returned. */
-function getAdMetadata(token, callback) {
-  printf('token=%s', token);
 
+/**
+ * This method ia called at the time the audio ad is going to be played. If
+ * there is an audio ad to be played, the audioUrl result will be returned. [ad.getAdMetadata]
+ * @param {string} token ad token
+ * @param {function} cb callback function
+ */
+function getAdMetadata(token, cb) {
+  printf('token=%s', token);
   var data = {
     adToken: token,
     userAuthToken: Global.userAuthToken
   }
-
-  callServer2("ad.getAdMetadata", data, {
+  var handler = {
     parent: getAdMetadata,
     args: token,
     target: handle_getAdMetadata,
-    callback: callback
-  });
+    cb: cb
+  }
+  callServer2("ad.getAdMetadata", data, handler);
 }
 
-/*  ad.getAdMetadata
-        handles the returned result from getAdMetadata request */
-function handle_getAdMetadata(request, callback) {
+
+/**
+ * Handles the returned result from getAdMetadata request [ad.getAdMetadata]
+ * @param {object} request result request object
+ * @param {Function} cb callback function
+ */
+function handle_getAdMetadata(request, cb) {
   if (request.isOk) {
     request.response.isAd = true;
-    callback(createTrack(request.response));
+    cb(createTrack(request.response));
   } else {
     printf("Error. server returned error (%d, %s)", request.code, request.description);
-    callback(request.response);
+    cb(request.response);
   }
 }
 
+
+/**
+ * Pandora MediaItem
+ * @param {string} path media path
+ * @param {string} label media title
+ * @param {string} thumbnail media thumbnail
+ * @constructor
+ */
 function MediaItem(path, label, thumbnail) {
   this.label = label
   this.thumbnail = 'media/pandora_default_thumb.png'
@@ -1891,9 +2062,18 @@ function MediaItem(path, label, thumbnail) {
   this.trackToken = ''
   this.allowFeedback = 1;
   this.songRating = 0;
-  if (thumbnail) this.thumbnail = thumbnail;
+  if (thumbnail) {
+    this.thumbnail = thumbnail;
+  }
 }
 
+
+/**
+ * Creates a new MediaItem and expands it with track data
+ * @param {object} item track info object
+ * @return {MediaItem}
+ * @constructor
+ */
 function createTrack(item) {
   var track = new MediaItem();
 
@@ -1925,13 +2105,20 @@ function createTrack(item) {
   return track;
 }
 
-/* refresh by loading new station list, then trying to get a new playlist */
+
+/**
+ * Refresh by loading new station list, then trying to get a new playlist
+ */
 function refreshAndPlayRandom() {
   getStationList(handle_refreshAndPlayRandom)
 }
 
-/*  if stations where refreshed, set random station and start playback
-        else set ui for failed playback */
+
+/**
+ * Handles refreshAndPlayRandom resutl. If stations where refreshed, sets
+ * random station and starts playback, else, sets ui for failed playback
+ * @param {object response result response object
+ */
 function handle_refreshAndPlayRandom(response) {
   if (response) {
     setRandomStation();
@@ -1939,7 +2126,11 @@ function handle_refreshAndPlayRandom(response) {
   } else uiFailedPlayback();
 }
 
-/*  returns the next track in the list of pending tracks */
+
+/**
+ * Returns the next track in the list of pending tracks
+ * @return {object|boolean} Returns track object if successfull, false on failure
+ */
 function getNextTrack() {
   if (Global.pendingTracks.length === 0) {
     print("Pending track queue is empty. This shouldn't happen.");
@@ -1957,7 +2148,12 @@ function getNextTrack() {
   }
 }
 
-/*  adds the given track to the skipped track list */
+
+/**
+ * Adds the given track to the skipped track list
+ * @param {string} trackToken Pandora track token
+ * @returns {boolean} true if successfull
+ */
 function addSkippedTrack(trackToken) {
   try {
     printf('todken=%s', trackToken);
@@ -1989,7 +2185,11 @@ function addSkippedTrack(trackToken) {
   }
 }
 
-/*  returns true if stations currently exists for the user */
+
+/**
+ * Checks if we have stations
+ * @return {boolean} returns true if we have loaded station list
+ */
 function hasStations() {
   if (Global.stationList.length < 1)
     return false
@@ -2003,6 +2203,12 @@ function hasStations() {
     return false;
 }
 
+
+/**
+ * Set station from index
+ * @param {number} stationIndex station id index
+ * @returns {boolean} returns true if successfull
+ */
 function setStation(stationIndex) {
   if (stationIndex < 0 || stationIndex > Global.stationList.length - 1) {
     printf("Error. index out of bounds %d, number of stations %d", stationIndex, len(Global.stationList));
@@ -2010,9 +2216,7 @@ function setStation(stationIndex) {
   }
 
   Global.currentStation = Global.stationList[stationIndex];
-
-  //clear pending tracks
-  Global.pendingTracks = [];
+  Global.pendingTracks = []; //clear pending tracks
 
   if (getCurrentStationToken() !== loadSetting('lastStationToken')) {
     print('updating stored last station token')
@@ -2022,6 +2226,12 @@ function setStation(stationIndex) {
   return true;
 }
 
+
+/**
+ * Set station from station token
+ * @param {string} stationToken Pandora station token
+ * @returns {boolean} returns setStation() result
+ */
 function setStationFromToken(stationToken) {
   try {
     printf('set station with token (%s)', stationToken);
@@ -2039,22 +2249,42 @@ function setStationFromToken(stationToken) {
   }
 }
 
+
+/**
+ * Sets a random station
+ */
 function setRandomStation() {
   var index = Math.floor(Math.random() * Global.stationList.length);
   return setStationFromToken(Global.stationList[index].stationToken);
 }
 
+
+/**
+ * Check station token against current station
+ * @param {string} stationToken pandora station token
+ * @return {boolean} returns true if stationToken matches current station.
+ */
 function isCurrentStation(stationToken) {
   return (Global.currentStation.stationToken === stationToken);
 }
 
+
+/**
+ * Clears pending track list
+ */
 function clearPendingTracks() {
   Global.pendingTracks = [];
 }
 
+
+/**
+ * Checks if its ok to skip
+ * @return {Boolean}
+ */
 function isSkipAllowed() {
-  if (qaMode)
+  if (qaMode) {
     return true;
+  }
 
   if (Global.currentTrack) {
     if (Global.currentTrack.isAd) {
@@ -2076,9 +2306,16 @@ function isSkipAllowed() {
       }
     }
 
-    if (savedSkipList) storeSkippedTracks();
+    if (savedSkipList) {
+      storeSkippedTracks();
+    }
+
     skipCount = skipList.length;
-    if (skipList.length < Global.skipTrackLimit) return true;
+
+    if (skipList.length < Global.skipTrackLimit) {
+      return true;
+    }
+
     print('skip not allowed, current limit reached');
     return false;
   }
@@ -2087,6 +2324,11 @@ function isSkipAllowed() {
   return false;
 }
 
+
+/**
+ * Skips the currently playing track
+ * @return {boolean} returns false on error
+ */
 function skipSong() {
   if (!isSkipAllowed()) {
     uiOkDialog('Unfortunately, our music licenses force us to limit the amount of tracks you can skip in an hour.');
@@ -2102,6 +2344,12 @@ function skipSong() {
   return false;
 }
 
+
+/**
+ * Sets current track rating
+ * @param {number} rating thumbs up/down 1/0
+ * @returns {boolean} returns false if no currentTrack
+ */
 function setSongRatingCurrentTrack(rating) {
   if (Global.currentTrack) {
     Global.currentTrack.songRating = rating
@@ -2110,6 +2358,11 @@ function setSongRatingCurrentTrack(rating) {
   return false;
 }
 
+
+/**
+ * Starts playback on next track in tracklist
+ * @return {boolean} returns true on successful playback
+ */
 function playNextTrack() {
   if (Global.status === PandoraStatus.LOGGEDOUT) {
     print('Error. not logged in');
@@ -2156,6 +2409,12 @@ function playNextTrack() {
   return true;
 }
 
+
+/**
+ * Trims the fat from the track object
+ * @param {MediaItem} track
+ * @return {MediaItem}
+ */
 function trimTrack(track) {
   var newTrack = {
     label: track.label,
@@ -2172,6 +2431,11 @@ function trimTrack(track) {
   return newTrack;
 }
 
+
+/**
+ * Adds track to list of played tracks
+ * @param {MediaItem} track
+ */
 function addPlayedTrack(track) {
   var tracks = getPlayedTracks();
 
@@ -2188,14 +2452,24 @@ function addPlayedTrack(track) {
   }
 
   print("adding new track: %s", JSON.stringify(newTrack));
-  if (!track.isAd) printf('Adding %s by %s to playedTracks list', track.label, track.artist)
-  else print('Adding AD to playedTracks list');
+  if (!track.isAd) {
+    printf('Adding %s by %s to playedTracks list', track.label, track.artist)
+  } else {
+    print('Adding AD to playedTracks list');
+  }
 
   tracks.unshift(newTrack);
-  if (tracks.length > 4) tracks.pop()
+  if (tracks.length > 4) {
+    tracks.pop()
+  }
   storePlayedTracks();
 }
 
+
+/**
+ * Loads last played station for playback
+ * @return {boolean} returns false on error
+ */
 function loadStationForPlayback() {
   print('loading new station token...');
 
@@ -2226,7 +2500,12 @@ function loadStationForPlayback() {
   return false;
 }
 
-function startPlayback(result) {
+
+/**
+ * Starts station playback
+ * @return {boolean} returns true on successful playback
+ */
+function startPlayback() {
   print('starting playback')
 
   buttonPlayPause.focus = true;
@@ -2257,7 +2536,11 @@ function startPlayback(result) {
   if (!playNextTrack()) uiFailedPlayback();
 }
 
-/*  returns the skiplist for the current station */
+
+/**
+ * Returns the skiplist for the current station
+ * @return {array} array of skipped tracks
+ */
 function getSkipList() {
   try {
     var token = getCurrentStationToken();
@@ -2272,7 +2555,11 @@ function getSkipList() {
   }
 }
 
-/*  returns the previously played track list for the current station */
+
+/**
+ * Returns the previously played track list for the current station
+ * @return {array} array of MediaItem objects
+ */
 function getPlayedTracks() {
   try {
     var token = getCurrentStationToken();
@@ -2292,8 +2579,13 @@ function getPlayedTracks() {
   }
 }
 
-/*  modifies the song rating on the currently playling track
-        from the play track list and the main currentTrack var */
+
+/**
+ * modifies the song rating on the currently playling track from the play
+ * track list and the main currentTrack var
+ * @param {number} songRating thumbs up/down 1/0
+ * @return {boolean} returns false on error
+ */
 function modifySongRating(songRating) {
   try {
     var tracks = getPlayedTracks();
@@ -2310,11 +2602,25 @@ function modifySongRating(songRating) {
   }
 }
 
+
+/**
+ * Gets station token from currently playing station
+ * @return {string} station token
+ */
 function getCurrentStationToken() {
-  if (Global.currentStation) return Global.currentStation.stationToken;
-  else return null;
+  if (Global.currentStation) {
+    return Global.currentStation.stationToken;
+  } else {
+    return null;
+  }
 }
 
+
+/**
+ * Retrievs station by station token
+ * @param {string} token station token
+ * @return {object|boolean} station item object, else, false
+ */
 function getStationByToken(token) {
   printf('token=%s', token);
   if (Global.stationList.length > 0) {
@@ -2325,6 +2631,14 @@ function getStationByToken(token) {
   return false;
 }
 
+
+/**
+ * Sets a station propery by its station token
+ * @param {string} stationToken station token
+ * @param {string} propertyName property name
+ * @param {string} propertyValue property value
+ * @returns {boolean} returns true if successful
+ */
 function setStationProperty(stationToken, propertyName, propertyValue) {
   if (Global.stationList.length > 0) {
     for (var i = 0; i < Global.stationList.length; i++) {
@@ -2337,6 +2651,12 @@ function setStationProperty(stationToken, propertyName, propertyValue) {
   return false;
 }
 
+
+/**
+ * Changes the current station
+ * @param {string} token station token
+ * @return {boolean|number} returns -1 if station already playing, returns true on successful change
+ */
 function changeCurrentStation(token) {
   if (token === getCurrentStationToken()) {
     printf('cannot change station. already playing station with matching token (%s)', token);
@@ -2363,6 +2683,10 @@ function changeCurrentStation(token) {
   }
 }
 
+
+/**
+ * Exists the pandora application
+ */
 function exitConfirmed() {
   playerStop();
   resetSession();
@@ -2370,10 +2694,20 @@ function exitConfirmed() {
   boxeeAPI.appStopped();
 }
 
+
+/**
+ * Confirms exit application with confirm dialog
+ * @method exit
+ * @return {[type]}
+ */
 function exit() {
   uiConfirmDialog('Pandora', 'Would you like to exit this application?', exitConfirmed, undefined, 'No thanks', 'Yes');
 }
 
+
+/**
+ * Handles failure to launch ;p
+ */
 function failedToLaunch() {
   windowManager.pop();
   boxeeAPI.appStarted(false)
