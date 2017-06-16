@@ -4,28 +4,36 @@
  */
 
 
+ /**
+  * Checks if object is typeof function
+  * @param  {function|object} f object to test for function
+  * @return {boolean} true if object is function
+  */
+ function isFunction(f) {
+   return (typeof f === 'function');
+ }
+
+
 /**
  * Serialize an object for url
- * @return   Returns string of encoded key-value pairs
+ * @return {sting} Returns string of encoded key-value pairs
  */
 Object.prototype.serialize = function() {
   var obj = this;
   var str = [];
-
   for (var p in obj) {
     if (p !== 'serialize') {
       str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
     }
   }
-
   return str.join("&");
 };
 
 
 /**
  * Remove item from array by index
- * @param    index   Index of item to be removed
- * @return   Returns array with specified index removed
+ * @param {number} index Index of item to be removed
+ * @return {array} Returns array with specified index removed
  */
 Array.prototype.remove = function(index) {
   var arr = this;
@@ -33,10 +41,20 @@ Array.prototype.remove = function(index) {
   return arr;
 };
 
+
+/**
+ * Return last item in array
+ * @return Return last item in array
+ */
 Array.prototype.last = function() {
   return this[this.length - 1];
 };
 
+
+/**
+ * Return last index (length-1)
+ * @return {number}
+ */
 Array.prototype.lastIndex = function() {
   return this.length - 1;
 };
@@ -44,7 +62,7 @@ Array.prototype.lastIndex = function() {
 
 /**
  * Create a simple hash, for non-secure comparison
- * @return   Returns has from string
+ * @return {string} Returns has from string
  */
 String.prototype.hashCode = function() {
   return this.split("").reduce(function(a, b) {
@@ -53,16 +71,18 @@ String.prototype.hashCode = function() {
   }, 0);
 }
 
-Array.prototype.contains = function(obj) {
-  /**
-  example:
-  var test = ['3', '4', 5];
-  alert(test.contains(5)) //--> true
-  alert(test.contains('7') //--> false
-  **/
 
+/**
+ * Check if item exists in array
+ * @param {object|string|number} obj object to check for in array
+ * @return {boolean} Returns true if obj is found in array
+ * @example
+ * var test = ['3', '4', 5];
+ * alert(test.contains(5)) //--> true
+ * alert(test.contains('7') //--> false
+ */
+Array.prototype.contains = function(obj) {
   var i = this.length;
-  
   while (i--) {
     if (this[i] === obj) {
       return true;
@@ -70,63 +90,6 @@ Array.prototype.contains = function(obj) {
   }
   return false;
 }
-
-// function base64_decode (data) {
-//   /* http://kevin.vanzonneveld.net
-//      +   original by: Tyler Akins (http://rumkin.com)
-//      +   improved by: Thunder.m
-//      +      input by: Aman Gupta
-//      +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-//      +   bugfixed by: Onno Marsman
-//      +   bugfixed by: Pellentesque Malesuada
-//      +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-//      +      input by: Brett Zamir (http://brett-zamir.me)
-//      +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-//      *     example 1: base64_decode('S2V2aW4gdmFuIFpvbm5ldmVsZA==');
-//      *     returns 1: 'Kevin van Zonneveld'
-//      mozilla has this native
-//      - but breaks in 2.0.0.12!
-//     if (typeof this.window['btoa'] == 'function') {
-//         return btoa(data);
-//     } */
-
-//     var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-//     var o1, o2, o3, h1, h2, h3, h4, bits, i = 0,
-//         ac = 0,
-//         dec = "",
-//         tmp_arr = [];
-
-//     if (!data) {
-//         return data;
-//     }
-
-//     data += '';
-
-//     do { // unpack four hexets into three octets using index points in b64
-//         h1 = b64.indexOf(data.charAt(i++));
-//         h2 = b64.indexOf(data.charAt(i++));
-//         h3 = b64.indexOf(data.charAt(i++));
-//         h4 = b64.indexOf(data.charAt(i++));
-
-//         bits = h1 << 18 | h2 << 12 | h3 << 6 | h4;
-
-//         o1 = bits >> 16 & 0xff;
-//         o2 = bits >> 8 & 0xff;
-//         o3 = bits & 0xff;
-
-//         if (h3 === 64) {
-//             tmp_arr[ac++] = String.fromCharCode(o1);
-//         } else if (h4 === 64) {
-//             tmp_arr[ac++] = String.fromCharCode(o1, o2);
-//         } else {
-//             tmp_arr[ac++] = String.fromCharCode(o1, o2, o3);
-//         }
-//     } while (i < data.length);
-
-//     dec = tmp_arr.join('');
-
-//     return dec;
-// }
 
 
 /**
